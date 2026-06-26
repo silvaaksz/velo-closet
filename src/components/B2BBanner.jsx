@@ -1,5 +1,3 @@
-import { Factory, CheckCircle, ArrowRight } from "lucide-react";
-
 export function B2BBanner() {
   return (
     <section className="py-16 md:py-20 border-t border-border bg-white">
@@ -13,8 +11,7 @@ export function B2BBanner() {
 
           <div className="flex-1 relative">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 py-1 mb-4">
-              <Factory size={12} className="text-primary" />
-              <span className="text-primary text-xs font-semibold tracking-wide uppercase" style={{ fontFamily: "'DM Mono', monospace" }}>Para fabricantes</span>
+              <span className="text-xs font-semibold tracking-wide uppercase text-primary" style={{ fontFamily: "'DM Mono', monospace" }}>🏭 Para fabricantes</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 leading-tight" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "-0.01em" }}>
               Produz e quer vender mais?{" "}
@@ -28,12 +25,12 @@ export function B2BBanner() {
             <div className="flex flex-wrap gap-4 mb-6">
               {["Zero mensalidade no 1º ano", "Painel de vendas em tempo real", "Logística integrada"].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  <CheckCircle size={14} className="text-emerald-500 shrink-0" /> {item}
+                  <span className="text-emerald-500">✓</span> {item}
                 </div>
               ))}
             </div>
             <button className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-black text-lg px-8 py-3.5 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: "0.03em" }}>
-              Cadastrar Minha Empresa <ArrowRight size={18} />
+              Cadastrar Minha Empresa ➔
             </button>
           </div>
 

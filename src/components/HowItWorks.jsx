@@ -1,11 +1,9 @@
-import { Search, TrendingDown, ShoppingCart, Truck } from "lucide-react";
-
 export function HowItWorks() {
   const steps = [
-    { number: "01", icon: <Search size={20} className="text-primary" />, title: "Busque o produto", desc: "Digite o que você precisa. Nossa IA encontra todas as confecções que produzem aquela peça." },
-    { number: "02", icon: <TrendingDown size={20} className="text-blue-400" />, title: "Compare as ofertas", desc: "Veja preço, prazo de entrega, avaliação e localização de cada confecção lado a lado." },
-    { number: "03", icon: <ShoppingCart size={20} className="text-emerald-500" />, title: "Compre com segurança", desc: "Pague pelo marketplace. Seu dinheiro só é liberado após você confirmar o recebimento." },
-    { number: "04", icon: <Truck size={20} className="text-muted-foreground" />, title: "Receba em casa", desc: "Rastreie cada etapa em tempo real. Suporte dedicado para qualquer imprevisto." },
+    { number: "01", icon: "🔍", title: "Busque o produto", desc: "Digite o que você precisa. Nossa IA encontra todas as confecções que produzem aquela peça." },
+    { number: "02", icon: "📉", title: "Compare as ofertas", desc: "Veja preço, prazo de entrega, avaliação e localização de cada confecção lado a lado." },
+    { number: "03", icon: "🛒", title: "Compre com segurança", desc: "Pague pelo marketplace. Seu dinheiro só é liberado após você confirmar o recebimento." },
+    { number: "04", icon: "🚚", title: "Receba em casa", desc: "Rastreie cada etapa em tempo real. Suporte dedicado para qualquer imprevisto." },
   ];
 
   return (
@@ -22,7 +20,7 @@ export function HowItWorks() {
           {steps.map((step) => (
             <div key={step.number} className="relative flex flex-col items-start gap-4 bg-white border border-border rounded-xl p-5 hover:border-primary/25 transition-colors">
               <div className="flex items-center justify-between w-full">
-                <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">{step.icon}</div>
+                <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-lg">{step.icon}</div>
                 <span className="text-3xl font-black text-muted-foreground/20" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>{step.number}</span>
               </div>
               <div>
