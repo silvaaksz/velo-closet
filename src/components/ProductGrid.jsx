@@ -1,11 +1,15 @@
 import { useState } from "react";
 import pantsImage from "../assets/hero.png";
+import baggy from "../assets/baggy.jpg";
+import croped from "../assets/croped.jpg";
+import vestido from "../assets/vestido.jpg";
+import jaqueta from "../assets/jaqueta.jpg";
 
 const CLOTHING_PRODUCTS = [
   {
-
     id: "calca",
     name: "Calça Baggy Wide Leg com Corrente",
+    image: baggy,
     category: "Calças",
     suppliers: 5,
     price: 129.9,
@@ -18,6 +22,7 @@ const CLOTHING_PRODUCTS = [
   {
     id: "blusa",
     name: "Blusa Cropped Canelada",
+    image: croped,
     category: "Blusas",
     suppliers: 6,
     price: 34.9,
@@ -26,6 +31,32 @@ const CLOTHING_PRODUCTS = [
     rating: 4.8,
     reviews: 418,
     badge: "Novidade",
+  },
+  {
+    id: "vestido",
+    name: "Vestido Midi Lastex Floral",
+    image: vestido, 
+    category: "Vestidos",
+    suppliers: 4,
+    price: 89.9,
+    originalPrice: 149.9,
+    savings: 40,
+    rating: 4.7,
+    reviews: 156,
+    badge: "Melhor Preço",
+  },
+  {
+    id: "jaqueta",
+    name: "Jaqueta Jeans Oversized Destroyer",
+    image: jaqueta, 
+    category: "Casacos",
+    suppliers: 7,
+    price: 159.9,
+    originalPrice: 239.9,
+    savings: 33,
+    rating: 4.9,
+    reviews: 312,
+    badge: "Destaque",
   },
 ];
 
@@ -44,7 +75,7 @@ export function ProductGrid({ onNavigate }) {
             <div key={product.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col hover:border-blue-500/30 hover:shadow-md transition-all group">
               <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
                 <img
-                  src={pantsImage}
+                  src={product.image == "" ? pantsImage : product.image}
                   alt={product.name}
                   className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 />
@@ -72,14 +103,18 @@ export function ProductGrid({ onNavigate }) {
                     <span className="text-xs text-gray-400 line-through">R$ {product.originalPrice.toFixed(2).replace(".", ",")}</span>
                     <div className="text-xl font-black text-gray-900">R$ {product.price.toFixed(2).replace(".", ",")}</div>
                   </div>
+                  
+                  {/* ESTA FOI A PARTE ATUALIZADA: */}
                   <div className="flex flex-col gap-1 items-end">
-                    {product.id === "calca" && (
-                      <button onClick={() => onNavigate?.(product.id)} className="text-[11px] font-bold px-2 py-1 rounded bg-gray-100 text-blue-700 border border-blue-200 hover:bg-gray-200">
-                        Ver mais ➔
-                      </button>
-                    )}
+                    <button 
+                      onClick={() => onNavigate?.(product.id)} 
+                      className="text-[11px] font-bold px-2 py-1 rounded bg-gray-100 text-blue-700 border border-blue-200 hover:bg-gray-200 transition-colors"
+                    >
+                      Ver mais ➔
+                    </button>
+                    
                     <button
-                      onClick={() => setAddedId(product.id)}
+                      onClick={() => setAddedId(addedId === product.id ? null : product.id)}
                       className={`text-xs font-bold px-3 py-2 rounded-lg transition-all ${
                         addedId === product.id ? "bg-emerald-50 text-emerald-600 border border-emerald-200" : "bg-blue-700 text-white hover:bg-blue-800"
                       }`}
@@ -87,6 +122,8 @@ export function ProductGrid({ onNavigate }) {
                       {addedId === product.id ? "✓ Adicionado" : "🛒 Comparar"}
                     </button>
                   </div>
+                  {/* ---------------------------------- */}
+                  
                 </div>
               </div>
             </div>
