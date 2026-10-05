@@ -1,0 +1,169 @@
+.container {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 20px;
+  color: #0f172a;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.mainImage {
+  width: 100%;
+  border-radius: 12px;
+  max-height: 450px;
+  object-fit: cover;
+}
+
+.category {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.priceContainer {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.priceContainer h2 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.oldPrice {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.sellerCount {
+  font-size: 0.85rem;
+  color: #2563eb;
+  margin-top: 5px;
+}
+
+.description {
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.sizeSelector {
+  margin: 20px 0;
+}
+
+.sizes {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.sizes button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.selectedSize {
+  border-color: #2563eb !important;
+  background: #eff6ff !important;
+  color: #2563eb;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.buyNowBtn {
+  flex: 1;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.addCartBtn {
+  flex: 1;
+  background: white;
+  border: 1px solid #cbd5e1;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.suppliersSection {
+  margin-top: 40px;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.suppliersList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.supplierCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.bestPriceTag {
+  background: #10b981;
+  color: white;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.supplierPrice {
+  text-align: right;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: 800;
+  display: block;
+}
+
+.selectSupplierBtn {
+  background: #0f172a;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}

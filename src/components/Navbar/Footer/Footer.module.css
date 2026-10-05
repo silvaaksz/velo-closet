@@ -1,0 +1,159 @@
+.footer {
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 48px;
+  color: #64748b;
+  font-family: inherit;
+  width: 100%;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr;
+  gap: 32px;
+}
+
+/* LOGO E INFOS DE CONTATO */
+.logoBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.iconBox {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 4px 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+.logoTexto {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #1e40af;
+  letter-spacing: 0.5px;
+}
+
+.descricao {
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.4;
+  margin-bottom: 16px;
+  max-width: 240px;
+}
+
+.contatoItem {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* TÍTULOS E LISTAS DE LINKS */
+.colunaLinks h4 {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: 0.6px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+
+.colunaLinks ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.colunaLinks li {
+  margin-bottom: 8px;
+}
+
+.colunaLinks a {
+  text-decoration: none;
+  color: #64748b;
+  font-size: 0.82rem;
+  transition: color 0.15s ease;
+}
+
+.colunaLinks a:hover {
+  color: #2563eb;
+}
+
+.btnLink {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #64748b;
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.btnLink:hover {
+  color: #2563eb;
+}
+
+/* LINHA DE COPYRIGHT */
+.bottomBar {
+  border-top: 1px solid #e2e8f0;
+  padding: 18px 0;
+}
+
+.bottomContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.bottomContainer p {
+  margin: 0;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 16px;
+}
+
+.legalLinks a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.legalLinks a:hover {
+  color: #64748b;
+}
+
+/* RESPONSIVIDADE PARA CELULAR */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bottomContainer {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+}
