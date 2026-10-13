@@ -1,134 +1,116 @@
 .container {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
-.header h1 {
-  font-size: 2rem;
+.container h2 {
+  font-size: 1.8rem;
   color: #0f172a;
   margin-bottom: 8px;
 }
 
-.header p {
+.container p {
   color: #64748b;
-  margin-bottom: 30px;
-}
-
-.filtrosBarra {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  background: white;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-}
-
-.inputBusca {
-  padding: 10px 16px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  margin-bottom: 24px;
   font-size: 0.95rem;
-  width: 280px;
 }
 
-.categorias {
-  display: flex;
-  gap: 10px;
-}
-
-.categorias button {
-  background: #f1f5f9;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  color: #475569;
-}
-
-.categorias button.ativo {
-  background: #2563eb;
-  color: white;
-}
-
-.gridProdutos {
+.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 24px;
 }
 
-.cardProduto {
+.card {
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.cardProduto:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-}
-
-.imgProduto {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-}
-
-.cardInfo {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: #cbd5e1;
+}
+
+.imagePlaceholder {
+  background: #e2e8f0;
+  height: 180px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .local {
   font-size: 0.75rem;
   color: #64748b;
-  font-weight: 600;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
-.cardInfo h3 {
-  font-size: 1rem;
-  margin: 6px 0;
+.card h3 {
+  font-size: 1.1rem;
   color: #0f172a;
+  margin: 0;
 }
 
-.confeccao {
-  font-size: 0.8rem;
-  color: #475569;
-  margin-bottom: 12px;
-}
-
-.precos {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.precoDe {
-  text-decoration: line-through;
-  color: #94a3b8;
+.fabricante {
   font-size: 0.85rem;
+  color: #475569;
+  margin: 0;
 }
 
-.precoPor {
-  font-size: 1.2rem;
-  font-weight: 800;
+.preco {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  text-decoration: line-through;
+  margin: 4px 0 0 0;
+}
+
+.precoDesconto {
+  font-size: 1.25rem;
+  font-weight: 700;
   color: #2563eb;
+  text-decoration: none;
+  margin-left: 8px;
 }
 
-.btnComprar {
-  width: 100%;
+.btnOfertas {
   background: #2563eb;
   color: white;
   border: none;
   padding: 10px;
-  border-radius: 6px;
-  font-weight: 700;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.btnOfertas:hover {
+  background: #1d4ed8;
+}
+
+.imageContainer {
+  width: 100%;
+  height: 220px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f1f5f9;
+}
+
+.productImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

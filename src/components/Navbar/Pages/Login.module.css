@@ -1,66 +1,71 @@
 .container {
-  padding: 50px 20px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 20px;
+  background-color: #f8fafc;
 }
 
-.authBox {
-  background-color: #1e293b;
-  border: 1px solid #334155;
+.card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
   width: 100%;
   max-width: 400px;
-  padding: 30px;
-  border-radius: 16px;
-  color: #f8fafc;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-.authBox h2 {
-  margin-bottom: 20px;
-  font-size: 1.4rem;
+.card h2 {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 15px;
+  text-align: left;
 }
 
 .inputGroup label {
-  font-size: 0.85rem;
-  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
 }
 
-.inputGroup input, .inputGroup select {
-  background-color: #0f172a;
-  border: 1px solid #334155;
-  padding: 10px;
+.inputGroup input {
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
-  color: #fff;
-  outline: none;
+  font-size: 0.95rem;
 }
 
-.submitBtn {
-  width: 100%;
-  background-color: #0066ff;
-  color: #fff;
+.btnLogin {
+  background: #2563eb;
+  color: white;
   border: none;
   padding: 12px;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   margin-top: 10px;
 }
 
-.toggleText {
-  margin-top: 20px;
-  font-size: 0.85rem;
-  color: #94a3b8;
-  text-align: center;
-}
-
-.toggleText span {
-  color: #0066ff;
-  cursor: pointer;
-  font-weight: 600;
+.btnLogin:hover {
+  background: #1d4ed8;
 }

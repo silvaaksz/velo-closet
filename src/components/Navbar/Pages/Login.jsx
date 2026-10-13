@@ -1,53 +1,51 @@
 import React, { useState } from 'react';
 import styles from './Login.module.css';
 
-export default function Login() {
-  const [isCadastro, setIsCadastro] = useState(false);
+export default function Login({ setPaginaAtual }) {
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email && senha) {
+      // Redireciona de volta para a home após o login bem-sucedido
+      setPaginaAtual('home');
+    } else {
+      alert('Por favor, preencha o e-mail e a senha.');
+    }
+  };
 
   return (
     <div className={styles.container}>
-      <div className={styles.authBox}>
-        <h2>{isCadastro ? 'Criar Nova Conta' : 'Acessar Conta'}</h2>
-
-        <form onSubmit={(e) => e.preventDefault()}>
-          {isCadastro && (
-            <div className={styles.inputGroup}>
-              <label>Nome Completo</label>
-              <input type="text" placeholder="Seu nome" />
-            </div>
-          )}
-
+      <div className={styles.card}>
+        <h2>Área do Cliente</h2>
+        <p>Faça login para gerir os seus pedidos e favoritos.</p>
+        
+        <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.inputGroup}>
             <label>E-mail</label>
-            <input type="email" placeholder="seu@email.com" />
+            <input 
+              type="email" 
+              placeholder="seu@email.com" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required
+            />
           </div>
 
           <div className={styles.inputGroup}>
             <label>Senha</label>
-            <input type="password" placeholder="••••••••" />
+            <input 
+              type="password" 
+              placeholder="********" 
+              value={senha} 
+              onChange={(e) => setSenha(e.target.value)} 
+              required
+            />
           </div>
 
-          {isCadastro && (
-            <div className={styles.inputGroup}>
-              <label>Perfil de Conta</label>
-              <select>
-                <option>Cliente / Comprador</option>
-                <option>Fornecedor / Fabricante</option>
-              </select>
-            </div>
-          )}
-
-          <button className={styles.submitBtn}>
-            {isCadastro ? 'Cadastrar' : 'Entrar'}
-          </button>
+          <button type="submit" className={styles.btnLogin}>Entrar na Conta</button>
         </form>
-
-        <p className={styles.toggleText}>
-          {isCadastro ? 'Já tem uma conta?' : 'Ainda não tem conta?'}{' '}
-          <span onClick={() => setIsCadastro(!isCadastro)}>
-            {isCadastro ? 'Entrar' : 'Cadastre-se'}
-          </span>
-        </p>
       </div>
     </div>
   );

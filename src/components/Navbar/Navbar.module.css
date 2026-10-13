@@ -1,92 +1,120 @@
-.header {
+.navbar {
   background-color: #ffffff;
   border-bottom: 1px solid #e2e8f0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: 12px 5%;
+  padding: 12px 24px;
+  width: 100%;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
-.topBar {
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  max-width: 1280px;
-  margin: 0 auto;
 }
 
 .logo {
-  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.25rem;
+  color: #1e3a8a;
+  white-space: nowrap;
+}
+
+.icon {
   font-size: 1.4rem;
-  color: #1e40af;
-  cursor: pointer;
 }
 
 .searchBox {
   display: flex;
   flex: 1;
-  max-width: 550px;
+  max-width: 500px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .searchBox input {
-  width: 100%;
+  flex: 1;
   padding: 10px 14px;
-  border: 1px solid #cbd5e1;
-  border-right: none;
-  border-radius: 8px 0 0 8px;
+  border: none;
+  background: transparent;
   outline: none;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  color: #334155;
 }
 
-.searchBtn {
-  background-color: #2563eb;
+.searchBox button {
+  background: #2563eb;
   color: white;
   border: none;
-  padding: 10px 18px;
-  border-radius: 0 8px 8px 0;
-  cursor: pointer;
+  padding: 0 18px;
   font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.navActions {
+.searchBox button:hover {
+  background: #1d4ed8;
+}
+
+.actions {
   display: flex;
   align-items: center;
   gap: 12px;
+  white-space: nowrap;
 }
 
-.textBtn {
-  background: none;
-  border: none;
-  color: #475569;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.cartBtn {
-  background: #f1f5f9;
+.btnLink {
+  background: transparent;
   border: 1px solid #cbd5e1;
+  color: #334155;
   padding: 8px 14px;
-  border-radius: 8px;
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
   font-size: 0.85rem;
+}
+
+.btnLink:hover {
+  background: #f1f5f9;
+}
+
+.btnCart {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btnFabricante {
+  background: #0f172a;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btnFabricante:hover {
+  background: #1e293b;
 }
 
 .badge {
   background: #2563eb;
   color: white;
-  border-radius: 50%;
   padding: 2px 6px;
-  font-size: 0.7rem;
-}
-
-.sellerBtn {
-  background-color: #1e40af;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  margin-left: 4px;
 }

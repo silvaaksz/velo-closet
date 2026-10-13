@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import styles from './DetalhesProdutos.module.css';
+import baggyImg from '../../../assets/baggy.jpg'; // Importa a imagem real
 
-export default function DetalhesProdutos({ produto, setPaginaAtual }) {
+export default function DetalhesProdutos({ setPaginaAtual }) {
   const [tamanho, setTamanho] = useState('M');
 
-  const prod = produto || {
+  const prod = {
     titulo: 'Calça Baggy Wide Leg com Corrente',
     categoria: 'CALÇAS',
     avaliacao: '4.8',
     avaliacoesQtd: 128,
     precoOriginal: '159,90',
     precoMinimo: '129,90',
-    imagem: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500'
+    imagem: baggyImg // Usa a imagem local do assets
   };
 
   const fornecedores = [
@@ -22,8 +23,8 @@ export default function DetalhesProdutos({ produto, setPaginaAtual }) {
 
   return (
     <div className={styles.container}>
-      <button className={styles.backBtn} onClick={() => setPaginaAtual('home')}>
-        ← Voltar para Roupas
+      <button className={styles.backBtn} onClick={() => setPaginaAtual('produtos')}>
+        ← Voltar para Produtos
       </button>
 
       <div className={styles.mainGrid}>
@@ -39,7 +40,7 @@ export default function DetalhesProdutos({ produto, setPaginaAtual }) {
           <div className={styles.priceContainer}>
             <h2>R$ {prod.precoMinimo}</h2>
             <span className={styles.oldPrice}>R$ {prod.precoOriginal}</span>
-            <p className={styles.sellerCount}>Vendido por <strong>Confecção do Sul</strong> e outros 4 fornecedores</p>
+            <p className={styles.sellerCount}>Vendido por <strong>Confecção do Sul</strong> e outros 2 fornecedores</p>
           </div>
 
           <p className={styles.description}>
@@ -66,7 +67,7 @@ export default function DetalhesProdutos({ produto, setPaginaAtual }) {
 
       <section className={styles.suppliersSection}>
         <h3>COMPARAÇÃO DE PREÇOS</h3>
-        <h2>{fornecedores.length + 2} fornecedores disponíveis para este produto</h2>
+        <h2>{fornecedores.length} fornecedores disponíveis para este produto</h2>
 
         <div className={styles.suppliersList}>
           {fornecedores.map((f) => (

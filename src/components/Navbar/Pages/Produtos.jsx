@@ -1,118 +1,74 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './Produtos.module.css';
 
-export default function Produtos() {
-  const [categoria, setCategoria] = useState('todas');
+// Importação das tuas imagens da pasta assets
+import baggyImg from '../../../assets/baggy.jpg';
+import cropedImg from '../../../assets/croped.jpg';
+import jaquetaImg from '../../../assets/jaqueta.jpg';
+import vestidoImg from '../../../assets/vestido.jpg';
 
-  const listaProdutos = [
-    {
-      id: 1,
-      nome: 'Calça Jeans Wide Leg',
-      categoria: 'calcas',
-      precoOriginal: 120.00,
-      precoPromocional: 89.90,
-      confeccao: 'Confecção Silva & Cia',
-      local: 'Fortaleza - CE',
-      imagem: 'https://via.placeholder.com/250x300?text=Calca+Jeans'
-    },
-    {
-      id: 2,
-      nome: 'Blusa Canelada Manga Curta',
-      categoria: 'blusas',
-      precoOriginal: 55.00,
-      precoPromocional: 34.90,
-      confeccao: 'Ateliê Moda Leve',
-      local: 'São Paulo - SP',
-      imagem: 'https://via.placeholder.com/250x300?text=Blusa+Canelada'
-    },
-    {
-      id: 3,
-      nome: 'Vestido Midi Linho',
-      categoria: 'vestidos',
-      precoOriginal: 180.00,
-      precoPromocional: 129.90,
-      confeccao: 'Confecção Sol Nascente',
-      local: 'Goiânia - GO',
-      imagem: 'https://via.placeholder.com/250x300?text=Vestido+Midi'
-    },
-    {
-      id: 4,
-      nome: 'Conjunto Alfaiataria Feminino',
-      categoria: 'conjuntos',
-      precoOriginal: 210.00,
-      precoPromocional: 149.90,
-      confeccao: 'Estilo & Corte',
-      local: 'Caruaru - PE',
-      imagem: 'https://via.placeholder.com/250x300?text=Conjunto'
-    }
-  ];
-
-  const produtosFiltrados = listaProdutos.filter((p) => {
-    return categoria === 'todas' || p.categoria === categoria;
-  });
-
+export default function Produtos({ setPaginaAtual }) {
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <h1>Catálogo de Produtos</h1>
-        <p>Compare preços diretamente das pequenas confecções de todo o Brasil</p>
-      </header>
+      <h2>Catálogo de Produtos</h2>
+      <p>Compare preços diretamente das pequenas confecções de todo o Brasil.</p>
 
-      {/* CATEGORIAS / ABAS */}
-      <div className={styles.filtrosBarra}>
-        <div className={styles.categorias}>
-          <button 
-            className={categoria === 'todas' ? styles.ativo : ''} 
-            onClick={() => setCategoria('todas')}
-          >
-            Todos
-          </button>
-          <button 
-            className={categoria === 'calcas' ? styles.ativo : ''} 
-            onClick={() => setCategoria('calcas')}
-          >
-            Calças
-          </button>
-          <button 
-            className={categoria === 'blusas' ? styles.ativo : ''} 
-            onClick={() => setCategoria('blusas')}
-          >
-            Blusas
-          </button>
-          <button 
-            className={categoria === 'vestidos' ? styles.ativo : ''} 
-            onClick={() => setCategoria('vestidos')}
-          >
-            Vestidos
-          </button>
-          <button 
-            className={categoria === 'conjuntos' ? styles.ativo : ''} 
-            onClick={() => setCategoria('conjuntos')}
-          >
-            Conjuntos
+      <div className={styles.grid}>
+        {/* Produto 1 - Calça Baggy */}
+        <div className={styles.card}>
+          <div className={styles.imageContainer}>
+            <img src={baggyImg} alt="Calça Jeans Wide Leg" className={styles.productImg} />
+          </div>
+          <span className={styles.local}>Fortaleza - CE</span>
+          <h3>Calça Jeans Wide Leg</h3>
+          <p className={styles.fabricante}>Por: <strong>Confecção Silva & Cia</strong></p>
+          <p className={styles.preco}>R$ 120,00 <span className={styles.precoDesconto}>R$ 89,90</span></p>
+          <button className={styles.btnOfertas} onClick={() => setPaginaAtual('detalhes')}>
+            Ver Ofertas
           </button>
         </div>
-      </div>
 
-      {/* GRID DE PRODUTOS */}
-      <div className={styles.gridProdutos}>
-        {produtosFiltrados.map((prod) => (
-          <div key={prod.id} className={styles.cardProduto}>
-            <img src={prod.imagem} alt={prod.nome} className={styles.imgProduto} />
-            <div className={styles.cardInfo}>
-              <span className={styles.local}>{prod.local}</span>
-              <h3>{prod.nome}</h3>
-              <p className={styles.confeccao}>Por: <strong>{prod.confeccao}</strong></p>
-              
-              <div className={styles.precos}>
-                <span className={styles.precoDe}>R$ {prod.precoOriginal.toFixed(2)}</span>
-                <span className={styles.precoPor}>R$ {prod.precoPromocional.toFixed(2)}</span>
-              </div>
-
-              <button className={styles.btnComprar}>Ver Ofertas</button>
-            </div>
+        {/* Produto 2 - Croped */}
+        <div className={styles.card}>
+          <div className={styles.imageContainer}>
+            <img src={cropedImg} alt="Blusa Canelada Manga Curta" className={styles.productImg} />
           </div>
-        ))}
+          <span className={styles.local}>São Paulo - SP</span>
+          <h3>Blusa Canelada Manga Curta</h3>
+          <p className={styles.fabricante}>Por: <strong>Ateliê Moda Leve</strong></p>
+          <p className={styles.preco}>R$ 55,00 <span className={styles.precoDesconto}>R$ 34,90</span></p>
+          <button className={styles.btnOfertas} onClick={() => setPaginaAtual('detalhes')}>
+            Ver Ofertas
+          </button>
+        </div>
+
+        {/* Produto 3 - Vestido */}
+        <div className={styles.card}>
+          <div className={styles.imageContainer}>
+            <img src={vestidoImg} alt="Vestido Midi Linho" className={styles.productImg} />
+          </div>
+          <span className={styles.local}>Goiânia - GO</span>
+          <h3>Vestido Midi Linho</h3>
+          <p className={styles.fabricante}>Por: <strong>Confecção Sol Nascente</strong></p>
+          <p className={styles.preco}>R$ 180,00 <span className={styles.precoDesconto}>R$ 129,90</span></p>
+          <button className={styles.btnOfertas} onClick={() => setPaginaAtual('detalhes')}>
+            Ver Ofertas
+          </button>
+        </div>
+
+        {/* Produto 4 - Jaqueta */}
+        <div className={styles.card}>
+          <div className={styles.imageContainer}>
+            <img src={jaquetaImg} alt="Jaqueta Jeans" className={styles.productImg} />
+          </div>
+          <span className={styles.local}>Caruaru - PE</span>
+          <h3>Jaqueta Jeans Oversized</h3>
+          <p className={styles.fabricante}>Por: <strong>Estilo & Corte</strong></p>
+          <p className={styles.preco}>R$ 210,00 <span className={styles.precoDesconto}>R$ 149,90</span></p>
+          <button className={styles.btnOfertas} onClick={() => setPaginaAtual('detalhes')}>
+            Ver Ofertas
+          </button>
+        </div>
       </div>
     </div>
   );
