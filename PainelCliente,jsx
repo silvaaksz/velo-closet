@@ -1,0 +1,36 @@
+import React from 'react';
+import styles from './PainelCliente.module.css';
+
+export default function PainelCliente({ setPaginaAtual, setIsLoggedIn }) {
+  return (
+    <div className={styles.container}>
+      <div className={styles.welcomeBox}>
+        <div>
+          <h1>Bem-vindo de volta, Comprador! 🎉</h1>
+          <p>Aqui estão os seus recursos exclusivos e histórico de compras direto das confecções.</p>
+        </div>
+        <button 
+          className={styles.btnLogout} 
+          onClick={() => { setIsLoggedIn(false); setPaginaAtual('home'); }}
+        >
+          Terminar Sessão
+        </button>
+      </div>
+
+      <div className={styles.gridRecursos}>
+        <div className={styles.recursoCard} onClick={() => setPaginaAtual('produtos')}>
+          <h3>📦 Meus Pedidos</h3>
+          <p>Acompanhe o rastreio de envio de 2 confecções parceiras.</p>
+        </div>
+        <div className={styles.recursoCard}>
+          <h3>⭐ Favoritos & Lojas</h3>
+          <p>Confecções locais que você segue e peças salvas.</p>
+        </div>
+        <div className={styles.recursoCard}>
+          <h3>🏷️ Meus Cupões</h3>
+          <p>Descontos especiais de até 15% em confecções nacionais.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
