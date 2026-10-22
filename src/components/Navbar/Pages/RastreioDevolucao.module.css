@@ -1,0 +1,136 @@
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  color: #0f172a;
+}
+
+.tabsHeader {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 30px;
+}
+
+.tabBtn {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+}
+
+.tabAtiva {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.boxContent {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 30px;
+}
+
+.searchBox {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.searchBox input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.searchBox button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.timelineBox {
+  margin-top: 25px;
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.statusBadge {
+  display: inline-block;
+  background: #10b981;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.timeline li {
+  padding: 10px 0;
+  border-bottom: 1px dashed #cbd5e1;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline .data {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.formDevolucao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.formDevolucao input, .formDevolucao select, .formDevolucao textarea {
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.btnSubmit {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.successDevolucao {
+  text-align: center;
+  padding: 30px;
+}
+
+.btnHome {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  margin-top: 15px;
+  cursor: pointer;
+}
