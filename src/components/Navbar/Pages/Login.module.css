@@ -4,27 +4,49 @@
   align-items: center;
   min-height: 70vh;
   padding: 20px;
+<<<<<<< HEAD
+=======
+  background-color: #f8fafc;
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 }
 
 .card {
   background: white;
+<<<<<<< HEAD
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 40px;
   width: 100%;
   max-width: 420px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+=======
+  padding: 40px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 }
 
 .card h2 {
   font-size: 1.5rem;
   color: #0f172a;
+<<<<<<< HEAD
   margin-bottom: 6px;
 }
 
 .card p {
   color: #64748b;
   font-size: 0.9rem;
+=======
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 0.85rem;
+  color: #64748b;
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
   margin-bottom: 24px;
 }
 
@@ -38,6 +60,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+<<<<<<< HEAD
 }
 
 .inputGroup label {
@@ -67,15 +90,30 @@
 }
 
 .inputGroup input, .inputGroup select {
+=======
+  text-align: left;
+}
+
+.inputGroup label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.inputGroup input {
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
   padding: 10px 14px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   font-size: 0.95rem;
+<<<<<<< HEAD
   outline: none;
 }
 
 .inputGroup input:focus {
   border-color: #2563eb;
+=======
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 }
 
 .btnLogin {
@@ -84,7 +122,10 @@
   border: none;
   padding: 12px;
   border-radius: 8px;
+<<<<<<< HEAD
   font-size: 1rem;
+=======
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
   font-weight: 700;
   cursor: pointer;
   margin-top: 10px;
@@ -92,6 +133,7 @@
 
 .btnLogin:hover {
   background: #1d4ed8;
+<<<<<<< HEAD
 }
 
 .divider {
@@ -127,4 +169,6 @@
 
 .btnCriarConta:hover {
   background: #e2e8f0;
+=======
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 }

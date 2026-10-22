@@ -1,7 +1,12 @@
 .container {
   max-width: 1200px;
+<<<<<<< HEAD
   margin: 0 auto;
   padding: 40px 20px;
+=======
+  margin: 40px auto;
+  padding: 0 20px;
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 }
 
 .container h2 {
@@ -12,12 +17,21 @@
 
 .container p {
   color: #64748b;
+<<<<<<< HEAD
   margin-bottom: 30px;
+=======
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 }
 
 .grid {
   display: grid;
+<<<<<<< HEAD
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+=======
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
   gap: 24px;
 }
 
@@ -25,14 +39,24 @@
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
+<<<<<<< HEAD
   overflow: hidden;
   display: flex;
   flex-direction: column;
   transition: transform 0.2s, box-shadow 0.2s;
+=======
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 }
 
 .card:hover {
   transform: translateY(-4px);
+<<<<<<< HEAD
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
@@ -112,4 +136,83 @@
 
 .btnComprar:hover {
   background: #1d4ed8;
+=======
+  border-color: #cbd5e1;
+}
+
+.imagePlaceholder {
+  background: #e2e8f0;
+  height: 180px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.local {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.card h3 {
+  font-size: 1.1rem;
+  color: #0f172a;
+  margin: 0;
+}
+
+.fabricante {
+  font-size: 0.85rem;
+  color: #475569;
+  margin: 0;
+}
+
+.preco {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  text-decoration: line-through;
+  margin: 4px 0 0 0;
+}
+
+.precoDesconto {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+  margin-left: 8px;
+}
+
+.btnOfertas {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.btnOfertas:hover {
+  background: #1d4ed8;
+}
+
+.imageContainer {
+  width: 100%;
+  height: 220px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f1f5f9;
+}
+
+.productImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 }

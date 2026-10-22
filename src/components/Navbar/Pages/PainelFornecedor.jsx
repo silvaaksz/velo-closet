@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import styles from './PainelFornecedor.module.css';
 
@@ -223,6 +224,19 @@ export default function PainelFornecedor({ adicionarNovoProduto }) {
         </form>
       )}
 
+=======
+import React from 'react';
+import styles from './PainelFornecedor.module.css';
+
+export default function PainelFornecedor() {
+  return (
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1>Painel do Fabricante</h1>
+        <button className={styles.btnNew}>+ Cadastrar Novo Produto</button>
+      </header>
+
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
       <div className={styles.gridStats}>
         <div className={styles.statCard}>
           <span>Vendas no Mês</span>

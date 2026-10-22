@@ -2,6 +2,7 @@
   max-width: 1100px;
   margin: 40px auto;
   padding: 0 20px;
+<<<<<<< HEAD
   color: #0f172a;
 }
 
@@ -152,6 +153,10 @@
 }
 
 /* Painel Autenticado */
+=======
+}
+
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 .header {
   display: flex;
   justify-content: space-between;
@@ -169,6 +174,7 @@
   cursor: pointer;
 }
 
+<<<<<<< HEAD
 .formCard {
   background: white;
   border: 1px solid #cbd5e1;
@@ -215,6 +221,8 @@
   margin-top: 15px;
 }
 
+=======
+>>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 .gridStats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
