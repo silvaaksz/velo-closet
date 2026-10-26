@@ -1,58 +1,84 @@
 import React from 'react';
-import styles from './Navbar.module.css';
 
-<<<<<<< HEAD
-export default function Navbar({ setPaginaAtual, qtdCarrinho, usuarioLogado }) {
+export default function Navbar({ paginaAtual, setPaginaAtual, usuarioLogado, setUsuarioLogado, qtdCarrinho }) {
+  // Cada tipo de usuário vai para a tela que o App.jsx realmente tem
+  const irParaAreaDoUsuario = () => {
+    if (!usuarioLogado) {
+      setPaginaAtual('login');
+    } else if (usuarioLogado.tipo === 'fornecedor') {
+      setPaginaAtual('fornecedor');
+    } else if (usuarioLogado.tipo === 'admin') {
+      setPaginaAtual('painelAdmin');
+    } else {
+      setPaginaAtual('rastreio'); // área do cliente: acompanhar pedidos
+    }
+  };
+
+  const sair = () => {
+    setUsuarioLogado(null);
+    setPaginaAtual('home');
+  };
+
   return (
-    <header className={styles.navbar}>
-      <div className={styles.container}>
-        <div className={styles.logo} onClick={() => setPaginaAtual('home')} style={{ cursor: 'pointer' }}>
-          <strong>VELO-CLOSET</strong>
-        </div>
+    <nav style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '15px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: 'Segoe UI, sans-serif' }}>
 
-=======
-export default function Navbar({ setPaginaAtual }) {
-  return (
-    <header className={styles.navbar}>
-      <div className={styles.container}>
-        {/* Logo que retorna para a Home */}
-        <div className={styles.logo} onClick={() => setPaginaAtual('home')} style={{ cursor: 'pointer' }}>
-          <span className={styles.icon}>🛍️</span>
-          <strong>VELO-CLOSET</strong>
-        </div>
-
-        {/* Barra de pesquisa */}
->>>>>>> 76712ebea165153f9c654aaa91688691037f9437
-        <div className={styles.searchBox}>
-          <input type="text" placeholder="O que você está procurando hoje? Compare preços de milhares de fabricantes." />
-          <button onClick={() => setPaginaAtual('produtos')}>Buscar</button>
-        </div>
-
-<<<<<<< HEAD
-        <div className={styles.actions}>
-          <button className={styles.btnLink} onClick={() => setPaginaAtual('login')}>
-            {usuarioLogado ? `Olá, ${usuarioLogado.nome}` : 'Área do Cliente'}
-          </button>
-          
-          <button className={styles.btnCart} onClick={() => setPaginaAtual('carrinho')}>
-            🛒 Carrinho <span className={styles.badge}>{qtdCarrinho}</span>
-=======
-        {/* Botões do Topo */}
-        <div className={styles.actions}>
-          <button className={styles.btnLink} onClick={() => setPaginaAtual('login')}>
-            Área do Cliente
-          </button>
-          
-          <button className={styles.btnCart} onClick={() => setPaginaAtual('produtos')}>
-            🛒 Carrinho <span className={styles.badge}>2</span>
->>>>>>> 76712ebea165153f9c654aaa91688691037f9437
-          </button>
-
-          <button className={styles.btnFabricante} onClick={() => setPaginaAtual('fornecedor')}>
-            Sou Fabricante
-          </button>
-        </div>
+      {/* Logo Velo Closet - Redireciona para a Home */}
+      <div
+        onClick={() => setPaginaAtual('home')}
+        style={{ fontSize: '22px', fontWeight: 'bold', color: '#2563eb', cursor: 'pointer', letterSpacing: '1px' }}
+      >
+        VELO-CLOSET
       </div>
-    </header>
+
+      {/* Campo de Busca */}
+      <div style={{ display: 'flex', gap: '10px', flex: 1, maxWidth: '450px', margin: '0 20px' }}>
+        <input
+          type="text"
+          placeholder="O que você está procurando hoje?"
+          style={{ width: '100%', padding: '8px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+        />
+        <button style={{ padding: '8px 16px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}>
+          Buscar
+        </button>
+      </div>
+
+      {/* Botões de Navegação */}
+      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+
+        {/* Área do Cliente / Login */}
+        <button
+          onClick={irParaAreaDoUsuario}
+          style={{ padding: '8px 16px', background: '#f1f5f9', color: '#334155', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}
+        >
+          {usuarioLogado ? `Olá, ${usuarioLogado.nome.split(' ')[0]}` : 'Área do Cliente'}
+        </button>
+
+        {usuarioLogado && (
+          <button
+            onClick={sair}
+            style={{ padding: '8px 16px', background: 'transparent', color: '#64748b', border: '1px solid #cbd5e1', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}
+          >
+            Sair
+          </button>
+        )}
+
+        {/* Carrinho */}
+        <button
+          onClick={() => setPaginaAtual('carrinho')}
+          style={{ padding: '8px 16px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+        >
+          Carrinho ({qtdCarrinho || 0})
+        </button>
+
+        {/* Sou Fabricante: sem login mostra planos/cadastro; logado como fornecedor abre o painel */}
+        <button
+          onClick={() => setPaginaAtual('fornecedor')}
+          style={{ padding: '8px 16px', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}
+        >
+          Sou Fabricante
+        </button>
+
+      </div>
+    </nav>
   );
 }

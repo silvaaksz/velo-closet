@@ -1,123 +1,103 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Produtos.module.css';
 
-<<<<<<< HEAD
-export default function Produtos({ produtos, abrirDetalhes, adicionarAoCarrinho }) {
+// Agora os produtos vêm do App.jsx (mesma fonte do painel do fornecedor),
+// então qualquer edição de preço ou estoque aparece aqui na hora.
+export default function Produtos({ produtos = [], abrirDetalhes, verDetalhesProduto }) {
+  const [termoBusca, setTermoBusca] = useState('');
+
+  const aoClicar = (p) => {
+    if (abrirDetalhes) abrirDetalhes(p);
+    else if (verDetalhesProduto) verDetalhesProduto(p);
+  };
+
+  // Filtra os produtos pelo título ou pelo nome do fabricante/loja
+  const produtosFiltrados = produtos.filter((p) => {
+    const termo = termoBusca.toLowerCase();
+    const titulo = (p.titulo || '').toLowerCase();
+    const fabricante = (p.fabricante || '').toLowerCase();
+    const nasLojas = (p.fornecedores || []).some((f) => (f.nome || '').toLowerCase().includes(termo));
+    return titulo.includes(termo) || fabricante.includes(termo) || nasLojas;
+  });
+
   return (
-    <div className={styles.container}>
-      <h2>Catálogo de Produtos</h2>
-      <p>Compare preços entre diferentes fabricantes e empresas parceiras.</p>
+    <div style={{ padding: '30px 40px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'Segoe UI, sans-serif' }}>
 
-      <div className={styles.grid}>
-        {produtos.map((produto) => (
-          <div key={produto.id} className={styles.card}>
-            <img 
-              src={produto.imagem} 
-              alt={produto.titulo} 
-              className={styles.imagem} 
-              onClick={() => abrirDetalhes(produto)}
-              style={{ cursor: 'pointer' }}
-            />
-            <div className={styles.info}>
-              <span className={styles.categoria}>{produto.categoria}</span>
-              <h3 onClick={() => abrirDetalhes(produto)} style={{ cursor: 'pointer' }}>
-                {produto.titulo}
-              </h3>
-              <p className={styles.precoMin}>
-                A partir de: <strong>R$ {produto.precoMinimo.toFixed(2).replace('.', ',')}</strong>
-              </p>
-              <p className={styles.fornecedoresQtd}>
-                {produto.fornecedores.length} fornecedor(es) disponível(eis)
-              </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+        <h1 style={{ fontSize: '26px', color: '#1e293b', margin: 0 }}>Catálogo de Produtos</h1>
 
-              <div className={styles.botoes}>
-                <button 
-                  className={styles.btnDetalhes} 
-                  onClick={() => abrirDetalhes(produto)}
-                >
-                  Ver Fornecedores
-                </button>
-                <button 
-                  className={styles.btnComprar} 
-                  onClick={() => adicionarAoCarrinho(produto)}
-                >
-                  Comprar Direto
-                </button>
+        {/* Barra de Pesquisa */}
+        <input
+          type="text"
+          placeholder="Pesquisar peça ou loja (ex: Fashion Girl)..."
+          value={termoBusca}
+          onChange={(e) => setTermoBusca(e.target.value)}
+          style={{ padding: '10px 16px', borderRadius: '8px', border: '1px solid #cbd5e1', width: '300px', fontSize: '14px' }}
+        />
+      </div>
+
+      {produtosFiltrados.length === 0 ? (
+        <div style={{ background: '#fff', padding: '30px', borderRadius: '12px', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+          <p style={{ color: '#64748b', fontSize: '16px' }}>Nenhum produto encontrado no catálogo.</p>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
+          {produtosFiltrados.map((p) => (
+            <div
+              key={p.id}
+              onClick={() => aoClicar(p)}
+              style={{
+                background: '#fff',
+                border: '1px solid #e2e8f0',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                cursor: 'pointer',
+                transition: 'transform 0.2s',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                opacity: p.estoque > 0 ? 1 : 0.6
+              }}
+            >
+              <div>
+                <img
+                  src={p.imagem}
+                  alt={p.titulo}
+                  style={{ width: '100%', height: '180px', objectFit: 'cover' }}
+                />
+                <div style={{ padding: '15px' }}>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#1e293b' }}>{p.titulo}</h3>
+                  <p style={{ margin: '0 0 5px 0', fontSize: '13px', color: '#64748b' }}>
+                    {(p.fornecedores || []).length > 1 ? (
+                      <strong style={{ color: '#2563eb' }}>Compare {p.fornecedores.length} lojas</strong>
+                    ) : (
+                      <>Vendido por: <strong>{p.fabricante || 'Confecção Parceira'}</strong></>
+                    )}
+                  </p>
+                  <p style={{ margin: 0, fontSize: '12px', color: '#94a3b8' }}>
+                    📍 {p.local || 'Brasil'}
+                  </p>
+                  <p style={{ margin: '6px 0 0 0', fontSize: '12px', fontWeight: 600, color: p.estoque > 0 ? '#475569' : '#dc2626' }}>
+                    {p.estoque > 0 ? `${p.estoque} em estoque` : 'Esgotado'}
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ padding: '0 15px 15px 15px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#16a34a' }}>
+                  {(p.fornecedores || []).length > 1 && (
+                    <small style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: '#64748b' }}>a partir de</small>
+                  )}
+                  R$ {Number(p.precoMinimo || 0).toFixed(2)}
+                </span>
+                <span style={{ fontSize: '12px', color: '#2563eb', fontWeight: '600' }}>Ver Detalhes →</span>
               </div>
             </div>
-          </div>
-        ))}
-=======
-// Importação das tuas imagens da pasta assets
-import baggyImg from '../../../assets/baggy.jpg';
-import cropedImg from '../../../assets/croped.jpg';
-import jaquetaImg from '../../../assets/jaqueta.jpg';
-import vestidoImg from '../../../assets/vestido.jpg';
-
-export default function Produtos({ setPaginaAtual }) {
-  return (
-    <div className={styles.container}>
-      <h2>Catálogo de Produtos</h2>
-      <p>Compare preços diretamente das pequenas confecções de todo o Brasil.</p>
-
-      <div className={styles.grid}>
-        {/* Produto 1 - Calça Baggy */}
-        <div className={styles.card}>
-          <div className={styles.imageContainer}>
-            <img src={baggyImg} alt="Calça Jeans Wide Leg" className={styles.productImg} />
-          </div>
-          <span className={styles.local}>Fortaleza - CE</span>
-          <h3>Calça Jeans Wide Leg</h3>
-          <p className={styles.fabricante}>Por: <strong>Confecção Silva & Cia</strong></p>
-          <p className={styles.preco}>R$ 120,00 <span className={styles.precoDesconto}>R$ 89,90</span></p>
-          <button className={styles.btnOfertas} onClick={() => setPaginaAtual('detalhes')}>
-            Ver Ofertas
-          </button>
+          ))}
         </div>
+      )}
 
-        {/* Produto 2 - Croped */}
-        <div className={styles.card}>
-          <div className={styles.imageContainer}>
-            <img src={cropedImg} alt="Blusa Canelada Manga Curta" className={styles.productImg} />
-          </div>
-          <span className={styles.local}>São Paulo - SP</span>
-          <h3>Blusa Canelada Manga Curta</h3>
-          <p className={styles.fabricante}>Por: <strong>Ateliê Moda Leve</strong></p>
-          <p className={styles.preco}>R$ 55,00 <span className={styles.precoDesconto}>R$ 34,90</span></p>
-          <button className={styles.btnOfertas} onClick={() => setPaginaAtual('detalhes')}>
-            Ver Ofertas
-          </button>
-        </div>
-
-        {/* Produto 3 - Vestido */}
-        <div className={styles.card}>
-          <div className={styles.imageContainer}>
-            <img src={vestidoImg} alt="Vestido Midi Linho" className={styles.productImg} />
-          </div>
-          <span className={styles.local}>Goiânia - GO</span>
-          <h3>Vestido Midi Linho</h3>
-          <p className={styles.fabricante}>Por: <strong>Confecção Sol Nascente</strong></p>
-          <p className={styles.preco}>R$ 180,00 <span className={styles.precoDesconto}>R$ 129,90</span></p>
-          <button className={styles.btnOfertas} onClick={() => setPaginaAtual('detalhes')}>
-            Ver Ofertas
-          </button>
-        </div>
-
-        {/* Produto 4 - Jaqueta */}
-        <div className={styles.card}>
-          <div className={styles.imageContainer}>
-            <img src={jaquetaImg} alt="Jaqueta Jeans" className={styles.productImg} />
-          </div>
-          <span className={styles.local}>Caruaru - PE</span>
-          <h3>Jaqueta Jeans Oversized</h3>
-          <p className={styles.fabricante}>Por: <strong>Estilo & Corte</strong></p>
-          <p className={styles.preco}>R$ 210,00 <span className={styles.precoDesconto}>R$ 149,90</span></p>
-          <button className={styles.btnOfertas} onClick={() => setPaginaAtual('detalhes')}>
-            Ver Ofertas
-          </button>
-        </div>
->>>>>>> 76712ebea165153f9c654aaa91688691037f9437
-      </div>
     </div>
   );
 }

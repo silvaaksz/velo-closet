@@ -1,230 +1,236 @@
 import React, { useState } from 'react';
-import styles from './Carrinho.module.css';
 
-export default function Carrinho({ carrinho, removerDoCarrinho, setPaginaAtual, setCarrinho, setPedidosHistorico }) {
+// Props que o App.jsx realmente envia
+export default function Carrinho({ carrinho, removerDoCarrinho, setCarrinho, setPedidosHistorico, usuarioLogado, setPaginaAtual }) {
   const [cep, setCep] = useState('');
-  const [endereco, setEndereco] = useState(null);
-  const [freteCalculado, setFreteCalculado] = useState(null);
-  const [metodoPagamento, setMetodoPagamento] = useState('pix');
-  const [pedidoConcluido, setPedidoConcluido] = useState(false);
-  const [codigoRastreio, setCodigoRastreio] = useState('');
+  const [valorFrete, setValorFrete] = useState(null);
+  const [endereco, setEndereco] = useState(null); // Morada real do ViaCEP
+  const [carregandoCep, setCarregandoCep] = useState(false);
+  const [formaPagamento, setFormaPagamento] = useState('pix');
 
-  const totalProdutos = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
-  const valorFrete = freteCalculado ? freteCalculado.valor : 0;
-  const desconto = metodoPagamento === 'pix' ? totalProdutos * 0.05 : 0;
-  const totalFinal = totalProdutos + valorFrete - desconto;
+  const precoDoItem = (item) => Number(item.preco || item.precoMinimo || 0);
 
-  // Função para consultar o CEP real usando a API gratuita ViaCEP
-  const consultarCepReal = async (e) => {
-    e.preventDefault();
+  const subtotal = carrinho.reduce((acc, item) => acc + precoDoItem(item), 0);
+  const total = subtotal + (valorFrete || 0);
+
+  const voltarAoCatalogo = () => setPaginaAtual('produtos');
+
+  const aoDigitarCep = (e) => {
+    const digitos = e.target.value.replace(/\D/g, '').slice(0, 8);
+    setCep(digitos.replace(/^(\d{5})(\d)/, '$1-$2'));
+  };
+
+  const calcularFrete = async () => {
     const cepLimpo = cep.replace(/\D/g, '');
-    
     if (cepLimpo.length !== 8) {
-      alert('Por favor, insira um CEP válido com 8 dígitos.');
+      alert('Digite um CEP válido com 8 dígitos.');
       return;
     }
 
+    setCarregandoCep(true);
     try {
       const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
       const data = await response.json();
-
       if (data.erro) {
-        alert('CEP não encontrado. Verifique o número digitado.');
+        alert('CEP não encontrado.');
         setEndereco(null);
-        setFreteCalculado(null);
+        setValorFrete(null);
         return;
       }
 
-      // Endereço real encontrado via API
-      setEndereco({
-        rua: data.logradouro || 'Endereço não especificado',
-        bairro: data.bairro || 'Zona Urbana',
-        cidade: data.localidade,
-        estado: data.uf
-      });
-
-      // Simula um valor de frete proporcional ou fixo
-      setFreteCalculado({ valor: 22.90, prazo: '3 a 5 dias úteis' });
-    } catch (error) {
-      alert('Erro ao consultar o CEP. Verifique sua conexão com a internet.');
+      setEndereco(data);
+      setValorFrete(19.9);
+    } catch (err) {
+      alert('Erro ao calcular o frete.');
+    } finally {
+      setCarregandoCep(false);
     }
   };
 
-  const finalizarCompra = () => {
+  const handleFinalizarCompra = () => {
     if (carrinho.length === 0) {
       alert('Seu carrinho está vazio.');
       return;
     }
-    if (!freteCalculado || !endereco) {
-      alert('Por favor, informe e consulte o seu CEP antes de finalizar.');
+    if (!usuarioLogado) {
+      alert('Faça login para concluir o pedido.');
+      setPaginaAtual('login');
+      return;
+    }
+    if (valorFrete === null || !endereco) {
+      alert('Calcule o frete com o seu CEP antes de concluir o pedido.');
       return;
     }
 
-    const codRastreio = 'VC' + Math.floor(100000 + Math.random() * 900000) + 'BR';
-    setCodigoRastreio(codRastreio);
-
     const novoPedido = {
-      codigo: codRastreio,
-      itens: [...carrinho],
-      total: totalFinal,
-      status: 'Entregue',
-      data: new Date().toLocaleDateString()
+      codigo: `VC${Math.floor(100000 + Math.random() * 900000)}BR`,
+      data: new Date().toISOString(),
+      total,
+      status: 'Em Trânsito (Separação do Fabricante)',
+      formaPagamento: formaPagamento.toUpperCase(),
+      enderecoEntrega: `${endereco.logradouro}, ${endereco.bairro} - ${endereco.localidade}/${endereco.uf}`,
+      cliente: usuarioLogado.email,
+      itens: carrinho.map((item) => ({
+        titulo: item.titulo || item.nome,
+        quantidade: item.quantidade || 1,
+        tamanho: item.tamanho || 'P',
+        loja: item.fornecedor || item.fabricante || 'Confecção Parceira',
+        preco: precoDoItem(item)
+      }))
     };
 
     setPedidosHistorico((prev) => [novoPedido, ...prev]);
-    setPedidoConcluido(true);
     setCarrinho([]);
+    alert('Pedido concluído com sucesso! Redirecionando para o rastreamento...');
+    setPaginaAtual('rastreio');
   };
 
-  if (pedidoConcluido) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.successCard}>
-          <h2>Pedido Realizado com Sucesso</h2>
-          <p>O seu pedido foi processado e encaminhado às confecções parceiras.</p>
-          <div className={styles.codigoBox}>
-            <span>Código de Rastreamento:</span>
-            <strong>{codigoRastreio}</strong>
-          </div>
-          {endereco && (
-            <p className={styles.enderecoTexto}>
-              <strong>Endereço de Entrega:</strong> {endereco.rua}, {endereco.bairro} - {endereco.cidade}/{endereco.estado}
-            </p>
-          )}
-
-          <div className={styles.btnGroupSuccess}>
-            <button className={styles.btnRastrear} onClick={() => setPaginaAtual('rastreio')}>
-              Rastrear Pedido (UC07)
-            </button>
-            <button className={styles.btnHome} onClick={() => setPaginaAtual('home')}>
-              Voltar à Página Inicial
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={styles.container}>
-      <h2>Carrinho de Compras</h2>
+    <div style={{ padding: '30px 40px', maxWidth: '900px', margin: '0 auto', fontFamily: 'Segoe UI, sans-serif' }}>
+      <h1 style={{ fontSize: '24px', color: '#1e293b', marginBottom: '20px' }}>Seu Carrinho de Compras</h1>
 
       {carrinho.length === 0 ? (
-        <div className={styles.empty}>
-          <p>O seu carrinho está vazio no momento.</p>
-          <button className={styles.btnExplore} onClick={() => setPaginaAtual('produtos')}>
+        <div style={{ background: '#fff', padding: '30px', borderRadius: '12px', textAlign: 'center', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+          <p style={{ color: '#64748b' }}>Seu carrinho está vazio no momento.</p>
+          <button
+            type="button"
+            onClick={voltarAoCatalogo}
+            style={{ marginTop: '15px', padding: '10px 20px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+          >
             Explorar Produtos
           </button>
         </div>
       ) : (
-        <div className={styles.grid}>
-          {/* Coluna da Esquerda: Produtos */}
-          <div className={styles.leftColumn}>
-            <div className={styles.itemsList}>
-              {carrinho.map((item) => (
-                <div key={item.idCarrinho} className={styles.itemCard}>
-                  <img src={item.imagem} alt={item.titulo} className={styles.itemImg} />
-                  <div className={styles.itemInfo}>
-                    <h3>{item.titulo}</h3>
-                    <p>Fabricante: <strong>{item.fornecedor}</strong></p>
-                    <p>Tamanho: <strong>{item.tamanho}</strong></p>
-                    <span className={styles.itemPreco}>
-                      R$ {item.preco.toFixed(2).replace('.', ',')}
-                    </span>
-                  </div>
-                  <button 
-                    className={styles.btnRemove} 
-                    onClick={() => removerDoCarrinho(item.idCarrinho)}
-                  >
-                    Remover
-                  </button>
+        <div style={{ background: '#fff', padding: '25px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+
+          {/* Lista de Itens */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '25px' }}>
+            {carrinho.map((item) => (
+              <div key={item.idCarrinho} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', borderBottom: '1px solid #e2e8f0', paddingBottom: '15px' }}>
+                {item.imagem && (
+                  <img src={item.imagem} alt={item.titulo} style={{ width: '56px', height: '56px', objectFit: 'cover', borderRadius: '6px' }} />
+                )}
+                <div style={{ flex: 1 }}>
+                  <h3 style={{ margin: '0 0 5px 0', fontSize: '16px', color: '#1e293b' }}>{item.titulo || item.nome}</h3>
+                  <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+                    Tamanho: <strong>{item.tamanho || 'P'}</strong> | Fabricante: {item.fornecedor || item.fabricante || 'Parceiro'}
+                  </p>
                 </div>
+                <span style={{ fontWeight: 'bold', color: '#16a34a' }}>R$ {precoDoItem(item).toFixed(2)}</span>
+                <button
+                  type="button"
+                  onClick={() => removerDoCarrinho(item.idCarrinho)}
+                  aria-label={`Remover ${item.titulo} do carrinho`}
+                  style={{ background: 'none', border: '1px solid #fecaca', color: '#b91c1c', borderRadius: '6px', padding: '6px 10px', cursor: 'pointer' }}
+                >
+                  Remover
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Frete e Endereço */}
+          <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
+            <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#334155', fontSize: '14px' }}>
+              Calcular Frete e Prazos por CEP
+            </label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <input
+                type="text"
+                placeholder="00000-000"
+                value={cep}
+                onChange={aoDigitarCep}
+                maxLength={9}
+                style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+              />
+              <button
+                type="button"
+                onClick={calcularFrete}
+                disabled={carregandoCep}
+                style={{ padding: '10px 18px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+              >
+                {carregandoCep ? 'Calculando...' : 'Calcular'}
+              </button>
+            </div>
+
+            {endereco && (
+              <div style={{ marginTop: '12px', padding: '10px 12px', background: '#fff', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px', color: '#334155' }}>
+                <strong>Endereço de Entrega:</strong> {endereco.logradouro}, {endereco.bairro} - {endereco.localidade}/{endereco.uf}
+              </div>
+            )}
+
+            {valorFrete !== null && (
+              <p style={{ margin: '10px 0 0 0', fontSize: '14px', color: '#16a34a', fontWeight: 'bold' }}>
+                ✓ Frete Entrega Padrão: R$ {valorFrete.toFixed(2)} (Prazo: 3 a 5 dias úteis)
+              </p>
+            )}
+          </div>
+
+          {/* Formas de Pagamento */}
+          <div style={{ marginBottom: '25px' }}>
+            <label style={{ display: 'block', fontWeight: '600', marginBottom: '10px', color: '#334155', fontSize: '14px' }}>
+              Forma de Pagamento
+            </label>
+            <div style={{ display: 'flex', gap: '15px' }}>
+              {[
+                { id: 'pix', nome: 'Pix (Aprovação Instantânea)' },
+                { id: 'cartao', nome: 'Cartão de Crédito' }
+              ].map((opcao) => (
+                <button
+                  key={opcao.id}
+                  type="button"
+                  onClick={() => setFormaPagamento(opcao.id)}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: formaPagamento === opcao.id ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                    background: formaPagamento === opcao.id ? '#eff6ff' : '#fff',
+                    color: formaPagamento === opcao.id ? '#2563eb' : '#334155',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {opcao.nome}
+                </button>
               ))}
             </div>
           </div>
 
-          {/* Coluna da Direita: Frete, Endereço e Pagamento juntos */}
-          <div className={styles.summaryCard}>
-            <h3>Resumo e Pagamento</h3>
-
-            {/* Seção de CEP */}
-            <div className={styles.secaoBloco}>
-              <label>Consultar Frete e Endereço (CEP)</label>
-              <form onSubmit={consultarCepReal} className={styles.formCep}>
-                <input 
-                  type="text" 
-                  placeholder="Ex: 01001-000" 
-                  value={cep} 
-                  onChange={(e) => setCep(e.target.value)}
-                  maxLength="9" 
-                  required 
-                />
-                <button type="submit">OK</button>
-              </form>
-
-              {endereco && freteCalculado && (
-                <div className={styles.enderecoResultado}>
-                  <p><strong>Local:</strong> {endereco.rua}, {endereco.bairro} - {endereco.cidade}/{endereco.estado}</p>
-                  <p><strong>Prazo:</strong> {freteCalculado.prazo}</p>
-                </div>
-              )}
+          {/* Totais */}
+          <div style={{ borderTop: '2px solid #f1f5f9', paddingTop: '15px', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', color: '#64748b', fontSize: '14px' }}>
+              <span>Subtotal:</span>
+              <span>R$ {subtotal.toFixed(2)}</span>
             </div>
-
-            <hr />
-
-            <div className={styles.summaryRow}>
-              <span>Subtotal</span>
-              <span>R$ {totalProdutos.toFixed(2).replace('.', ',')}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', color: '#64748b', fontSize: '14px' }}>
+              <span>Frete:</span>
+              <span>{valorFrete ? `R$ ${valorFrete.toFixed(2)}` : 'A calcular'}</span>
             </div>
-
-            <div className={styles.summaryRow}>
-              <span>Frete</span>
-              <span>{freteCalculado ? `R$ ${valorFrete.toFixed(2).replace('.', ',')}` : 'A calcular'}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 'bold', color: '#1e293b' }}>
+              <span>Total do Pedido:</span>
+              <span style={{ color: '#16a34a' }}>R$ {total.toFixed(2)}</span>
             </div>
+          </div>
 
-            {metodoPagamento === 'pix' && (
-              <div className={styles.summaryRowDiscount}>
-                <span>Desconto PIX (5%)</span>
-                <span>- R$ {desconto.toFixed(2).replace('.', ',')}</span>
-              </div>
-            )}
-
-            <hr />
-
-            <div className={styles.summaryRowTotal}>
-              <span>Total Final</span>
-              <span>R$ {totalFinal.toFixed(2).replace('.', ',')}</span>
-            </div>
-
-            <h4 style={{ marginTop: '15px' }}>Forma de Pagamento</h4>
-            <div className={styles.paymentOptions}>
-              <label>
-                <input 
-                  type="radio" 
-                  name="pagamento" 
-                  value="pix" 
-                  checked={metodoPagamento === 'pix'} 
-                  onChange={() => setMetodoPagamento('pix')} 
-                />
-                PIX (5% de desconto automático)
-              </label>
-
-              <label>
-                <input 
-                  type="radio" 
-                  name="pagamento" 
-                  value="cartao" 
-                  checked={metodoPagamento === 'cartao'} 
-                  onChange={() => setMetodoPagamento('cartao')} 
-                />
-                Cartão de Crédito (até 6x)
-              </label>
-            </div>
-
-            <button className={styles.btnFinalize} onClick={finalizarCompra}>
-              Concluir Pagamento e Pedido
+          {/* Ações */}
+          <div style={{ display: 'flex', gap: '15px' }}>
+            <button
+              type="button"
+              onClick={voltarAoCatalogo}
+              style={{ flex: 1, padding: '12px', background: '#e2e8f0', color: '#334155', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              Continuar Comprando
+            </button>
+            <button
+              type="button"
+              onClick={handleFinalizarCompra}
+              style={{ flex: 1, padding: '12px', background: '#16a34a', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              Concluir Pedido
             </button>
           </div>
+
         </div>
       )}
     </div>

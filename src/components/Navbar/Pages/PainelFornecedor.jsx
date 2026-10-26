@@ -1,254 +1,424 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
-import styles from './PainelFornecedor.module.css';
 
-export default function PainelFornecedor({ adicionarNovoProduto }) {
-  const [fornecedorAutenticado, setFornecedorAutenticado] = useState(false);
-  const [cnpj, setCnpj] = useState('');
-  const [senha, setSenha] = useState('');
-  const [planoSelecionado, setPlanoSelecionado] = useState('PRATA');
+const inputStyle = {
+  width: '100%',
+  padding: '12px',
+  borderRadius: '6px',
+  border: '1px solid #cbd5e1',
+  fontSize: '15px',
+  boxSizing: 'border-box'
+};
 
-  const [mostrarForm, setMostrarForm] = useState(false);
-  const [form, setForm] = useState({
-    titulo: '',
-    categoria: 'CALÇAS',
-    local: '',
-    fabricante: '',
-    preco: '',
-    descricao: ''
+const labelStyle = { display: 'block', marginBottom: '5px', fontWeight: '500', color: '#475569' };
+
+const CATEGORIAS = [
+  { valor: 'CALÇAS', nome: 'Calças' },
+  { valor: 'BLUSAS', nome: 'Blusas' },
+  { valor: 'JAQUETAS', nome: 'Jaquetas' },
+  { valor: 'VESTIDOS', nome: 'Vestidos' }
+];
+
+// Reduz a foto (máx. 800px) e converte para JPEG, para não pesar no banco
+function lerImagem(file) {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith('image/')) {
+      reject(new Error('Escolha um arquivo de imagem (JPG, PNG ou WEBP).'));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Não foi possível ler a imagem.'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Imagem inválida.'));
+      img.onload = () => {
+        const MAX = 800;
+        const escala = Math.min(1, MAX / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * escala);
+        canvas.height = Math.round(img.height * escala);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
   });
+}
 
-  const handleLoginFornecedor = (e) => {
-    e.preventDefault();
-    if (!cnpj || !senha) {
-      return alert('Por favor, informe o CNPJ e a senha.');
-    }
-    setFornecedorAutenticado(true);
+export default function PainelFornecedor({ adicionarNovoProduto, editarProduto, produtos = [], usuarioLogado }) {
+  // Formulário de cadastro
+  const [titulo, setTitulo] = useState('');
+  const [categoria, setCategoria] = useState('CALÇAS');
+  const [preco, setPreco] = useState('');
+  const [estoque, setEstoque] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [imagem, setImagem] = useState('');
+  const [ean, setEan] = useState('');
+  const [enviando, setEnviando] = useState(false);
+
+  // Edição
+  const [editandoId, setEditandoId] = useState(null);
+  const [edit, setEdit] = useState({ titulo: '', categoria: 'CALÇAS', ean: '', descricao: '', preco: '', estoque: '', imagem: '', imagemAtual: '' });
+  const [salvando, setSalvando] = useState(false);
+
+  // Mensagem de erro: limpa ao digitar, ao tentar de novo e ao sair da tela
+  const [erro, setErro] = useState('');
+
+  const meusProdutos = produtos.filter(
+    (p) =>
+      usuarioLogado &&
+      (p.fornecedor_email === usuarioLogado.email || p.fabricante === usuarioLogado.nome)
+  );
+
+  const comLimpeza = (setter) => (e) => {
+    if (erro) setErro('');
+    setter(e.target.value);
   };
 
-  const handleSubmitProduto = (e) => {
-    e.preventDefault();
-    if (!form.titulo || !form.preco || !form.fabricante || !form.local) {
-      return alert('Preencha todos os campos obrigatórios!');
-    }
-    adicionarNovoProduto(form);
-    setForm({ titulo: '', categoria: 'CALÇAS', local: '', fabricante: '', preco: '', descricao: '' });
-    setMostrarForm(false);
+  const campoEdit = (campo) => (e) => {
+    if (erro) setErro('');
+    setEdit((prev) => ({ ...prev, [campo]: e.target.value }));
   };
 
-  if (!fornecedorAutenticado) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.bannerHeader}>
-          <h1>Portal do Fabricante & Confecção</h1>
-          <p>Conecte a sua fábrica diretamente a milhares de compradores e lojistas em todo o Brasil.</p>
-        </div>
+  const escolherFoto = async (e, aplicar) => {
+    const arquivo = e.target.files?.[0];
+    if (!arquivo) return;
+    setErro('');
+    try {
+      aplicar(await lerImagem(arquivo));
+    } catch (err) {
+      setErro(err.message);
+    }
+  };
 
-        <h2 className={styles.secaoTitulo}>Planos de Assinatura B2B</h2>
-        
-        {/* Os 3 Planos do Usuário */}
-        <div className={styles.gridPlanos}>
-          {/* Plano Bronze */}
-          <div 
-            className={`${styles.cardPlano} ${planoSelecionado === 'BRONZE' ? styles.planoAtivo : ''}`}
-            onClick={() => setPlanoSelecionado('BRONZE')}
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErro('');
+
+    if (!titulo.trim() || !preco) {
+      setErro('Por favor, preencha o título e o preço do produto.');
+      return;
+    }
+
+    setEnviando(true);
+    try {
+      await adicionarNovoProduto({
+        titulo: titulo.trim(),
+        categoria,
+        ean: ean.trim() || null,
+        preco,
+        estoque: estoque === '' ? 10 : estoque,
+        descricao,
+        imagem: imagem || null,
+        fabricante: usuarioLogado?.nome || 'Confecção Parceira',
+        local: 'Brasil'
+      });
+
+      setTitulo('');
+      setPreco('');
+      setEstoque('');
+      setDescricao('');
+      setImagem('');
+      setEan('');
+    } catch (err) {
+      setErro(err.message || 'Erro ao cadastrar o produto.');
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  const iniciarEdicao = (p) => {
+    setErro('');
+    setEditandoId(p.id);
+    setEdit({
+      titulo: p.titulo,
+      categoria: p.categoria,
+      ean: p.ean || '',
+      descricao: p.descricao || '',
+      preco: String(p.precoMinimo),
+      estoque: String(p.estoque),
+      imagem: '', // vazio = manter a foto atual
+      imagemAtual: p.imagem
+    });
+  };
+
+  const cancelarEdicao = () => {
+    setErro('');
+    setEditandoId(null);
+  };
+
+  const salvarEdicao = async (id) => {
+    setErro('');
+
+    const precoNum = parseFloat(edit.preco);
+    const estoqueNum = parseInt(edit.estoque, 10);
+    if (!edit.titulo.trim()) {
+      setErro('O título não pode ficar vazio.');
+      return;
+    }
+    if (!Number.isFinite(precoNum) || precoNum <= 0) {
+      setErro('Informe um preço válido, maior que zero.');
+      return;
+    }
+    if (!Number.isInteger(estoqueNum) || estoqueNum < 0) {
+      setErro('Informe um estoque válido (0 ou mais).');
+      return;
+    }
+
+    setSalvando(true);
+    try {
+      await editarProduto(id, {
+        titulo: edit.titulo,
+        categoria: edit.categoria,
+        ean: edit.ean,
+        descricao: edit.descricao,
+        imagem: edit.imagem || null,
+        precoMinimo: precoNum,
+        estoque: estoqueNum
+      });
+      setEditandoId(null);
+    } catch (err) {
+      setErro(err.message || 'Erro ao salvar a alteração.');
+    } finally {
+      setSalvando(false);
+    }
+  };
+
+  return (
+    <div style={{ padding: '40px 20px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+      <div style={{ background: '#ffffff', padding: '30px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0' }}>
+        <h2 style={{ color: '#1e293b', marginBottom: '8px' }}>Painel do Fabricante / Fornecedor</h2>
+        <p style={{ color: '#64748b', marginBottom: '25px' }}>
+          Bem-vindo(a), <strong>{usuarioLogado?.nome || 'Fornecedor Parceiro'}</strong>! Aqui podes gerir o teu catálogo e stock.
+        </p>
+
+        {erro && (
+          <div
+            role="alert"
+            style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', padding: '12px 16px', borderRadius: '8px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
           >
-            <h3>Plano Bronze</h3>
-            <span className={styles.subtituloPlano}>Gratuito / Entrada</span>
-            <div className={styles.precoPlano}>R$ 0<span>/mês</span></div>
-            <ul>
-              <li>✓ Cadastre até 5 produtos</li>
-              <li>✓ Ideal para a confecção testar a plataforma</li>
-              <li>✓ Exibição standard no catálogo</li>
-              <li>✓ Recebimento de vendas via Pix</li>
-            </ul>
+            <span>{erro}</span>
+            <button
+              type="button"
+              onClick={() => setErro('')}
+              aria-label="Fechar mensagem"
+              style={{ background: 'none', border: 'none', color: '#b91c1c', fontSize: '18px', cursor: 'pointer' }}
+            >
+              ×
+            </button>
           </div>
+        )}
 
-          {/* Plano Prata */}
-          <div 
-            className={`${styles.cardPlano} ${styles.cardPro} ${planoSelecionado === 'PRATA' ? styles.planoAtivo : ''}`}
-            onClick={() => setPlanoSelecionado('PRATA')}
-          >
-            <span className={styles.badgePopular}>MAIS RECOMENDADO</span>
-            <h3>Plano Prata</h3>
-            <span className={styles.subtituloPlano}>Crescimento</span>
-            <div className={styles.precoPlano}>R$ 49<span>/mês</span></div>
-            <ul>
-              <li>✓ Cadastre até 30 produtos</li>
-              <li>✓ Acesso ao painel de métricas simples</li>
-              <li>✓ Suporte exclusivo via chat</li>
-              <li>✓ Taxa de comissão reduzida</li>
-            </ul>
-          </div>
+        {/* Cadastro */}
+        <div style={{ background: '#f8fafc', padding: '25px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+          <h3 style={{ color: '#334155', marginBottom: '15px' }}>Cadastrar Novo Produto</h3>
 
-          {/* Plano Ouro */}
-          <div 
-            className={`${styles.cardPlano} ${planoSelecionado === 'OURO' ? styles.planoAtivo : ''}`}
-            onClick={() => setPlanoSelecionado('OURO')}
-          >
-            <h3>Plano Ouro</h3>
-            <span className={styles.subtituloPlano}>Ilimitado & Destaque</span>
-            <div className={styles.precoPlano}>R$ 99<span>/mês</span></div>
-            <ul>
-              <li>✓ Catálogo ilimitado de produtos</li>
-              <li>✓ Produtos em destaque na página inicial</li>
-              <li>✓ Relatórios de tendências de vendas</li>
-              <li>✓ Prioridade total no suporte</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className={styles.loginBox}>
-          <h3>Acesse a sua Conta de Fabricante</h3>
-          <p>Se já tem cadastro ou deseja assinar o plano <strong>{planoSelecionado}</strong>, entre abaixo:</p>
-
-          <form onSubmit={handleLoginFornecedor} className={styles.formLogin}>
-            <div className={styles.fieldGroup}>
-              <label>CNPJ da Confecção / Empresa *</label>
-              <input 
-                type="text" 
-                placeholder="00.000.000/0001-00" 
-                value={cnpj} 
-                onChange={(e) => setCnpj(e.target.value)} 
-                required 
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <div>
+              <label style={labelStyle}>Título do Produto</label>
+              <input
+                type="text"
+                placeholder="Ex: Calça Jeans Balloon Masculina"
+                value={titulo}
+                onChange={comLimpeza(setTitulo)}
+                style={inputStyle}
+                required
               />
             </div>
 
-            <div className={styles.fieldGroup}>
-              <label>Senha de Acesso *</label>
-              <input 
-                type="password" 
-                placeholder="********" 
-                value={senha} 
-                onChange={(e) => setSenha(e.target.value)} 
-                required 
+            <div>
+              <label style={labelStyle}>Categoria</label>
+              <select value={categoria} onChange={comLimpeza(setCategoria)} style={inputStyle}>
+                {CATEGORIAS.map((c) => (
+                  <option key={c.valor} value={c.valor}>{c.nome}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Código de barras / EAN (opcional)</label>
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="Ex: 7891029384756"
+                value={ean}
+                onChange={comLimpeza(setEan)}
+                style={inputStyle}
+              />
+              <small style={{ color: '#64748b' }}>
+                Se outra loja vende o mesmo produto, usar o mesmo EAN junta as ofertas para o cliente comparar preços.
+                Sem EAN, juntamos pelo nome igual.
+              </small>
+            </div>
+
+            <div style={{ display: 'flex', gap: '15px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={labelStyle}>Preço Mínimo (R$)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="89.90"
+                  value={preco}
+                  onChange={comLimpeza(setPreco)}
+                  style={inputStyle}
+                  required
+                />
+              </div>
+
+              <div style={{ flex: 1 }}>
+                <label style={labelStyle}>Stock Inicial</label>
+                <input
+                  type="number"
+                  placeholder="50"
+                  value={estoque}
+                  onChange={comLimpeza(setEstoque)}
+                  style={inputStyle}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Foto do produto</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => escolherFoto(e, setImagem)}
+              />
+              {imagem && (
+                <img src={imagem} alt="Pré-visualização" style={{ display: 'block', marginTop: '10px', width: '120px', height: '120px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+              )}
+            </div>
+
+            <div>
+              <label style={labelStyle}>Descrição</label>
+              <textarea
+                placeholder="Detalhes sobre o tecido, modelagem, etc."
+                value={descricao}
+                onChange={comLimpeza(setDescricao)}
+                style={{ ...inputStyle, minHeight: '90px' }}
               />
             </div>
 
-            <button type="submit" className={styles.btnEntrar}>
-              Confirmar Assinatura ({planoSelecionado}) & Entrar no Painel →
+            <button
+              type="submit"
+              disabled={enviando}
+              style={{ padding: '14px', backgroundColor: enviando ? '#93c5fd' : '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', fontSize: '16px', cursor: enviando ? 'default' : 'pointer', marginTop: '10px' }}
+            >
+              {enviando ? 'Cadastrando...' : 'Cadastrar Produto'}
             </button>
           </form>
         </div>
-      </div>
-    );
-  }
 
-  return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div>
-          <h1>Painel do Fabricante</h1>
-          <p style={{ color: '#10b981', fontWeight: '600', margin: 0 }}>
-            Plano {planoSelecionado} Ativo • CNPJ: {cnpj}
-          </p>
-        </div>
-        <button className={styles.btnNew} onClick={() => setMostrarForm(!mostrarForm)}>
-          {mostrarForm ? 'Cancelar' : '+ Cadastrar Novo Produto'}
-        </button>
-      </header>
+        {/* Meus produtos */}
+        <div style={{ marginTop: '30px' }}>
+          <h3 style={{ color: '#334155', marginBottom: '15px' }}>Meus Produtos</h3>
 
-      {mostrarForm && (
-        <form onSubmit={handleSubmitProduto} className={styles.formCard}>
-          <h3>Cadastrar Peça no Catálogo</h3>
-          <div className={styles.formGrid}>
-            <div>
-              <label>Nome da Peça *</label>
-              <input 
-                type="text" 
-                placeholder="Ex: Calça Cargo Streetwear" 
-                value={form.titulo} 
-                onChange={(e) => setForm({ ...form, titulo: e.target.value })} 
-                required 
-              />
+          {meusProdutos.length === 0 ? (
+            <p style={{ color: '#64748b' }}>Você ainda não tem produtos cadastrados.</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {meusProdutos.map((p) =>
+                editandoId === p.id ? (
+                  <div
+                    key={p.id}
+                    style={{ padding: '16px', border: '2px solid #2563eb', borderRadius: '8px', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '12px' }}
+                  >
+                    <div>
+                      <label style={labelStyle}>Título</label>
+                      <input type="text" value={edit.titulo} onChange={campoEdit('titulo')} style={inputStyle} />
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: '140px' }}>
+                        <label style={labelStyle}>Categoria</label>
+                        <select value={edit.categoria} onChange={campoEdit('categoria')} style={inputStyle}>
+                          {CATEGORIAS.map((c) => (
+                            <option key={c.valor} value={c.valor}>{c.nome}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div style={{ flex: 1, minWidth: '120px' }}>
+                        <label style={labelStyle}>Preço (R$)</label>
+                        <input type="number" step="0.01" value={edit.preco} onChange={campoEdit('preco')} style={inputStyle} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: '100px' }}>
+                        <label style={labelStyle}>Estoque</label>
+                        <input type="number" value={edit.estoque} onChange={campoEdit('estoque')} style={inputStyle} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>Código de barras / EAN</label>
+                      <input type="text" inputMode="numeric" value={edit.ean} onChange={campoEdit('ean')} style={inputStyle} />
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>Descrição</label>
+                      <textarea value={edit.descricao} onChange={campoEdit('descricao')} style={{ ...inputStyle, minHeight: '80px' }} />
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>Foto</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <img
+                          src={edit.imagem || edit.imagemAtual}
+                          alt="Foto do produto"
+                          style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                        />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => escolherFoto(e, (dataUrl) => setEdit((prev) => ({ ...prev, imagem: dataUrl })))}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button
+                        type="button"
+                        onClick={() => salvarEdicao(p.id)}
+                        disabled={salvando}
+                        style={{ padding: '10px 18px', background: '#16a34a', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
+                      >
+                        {salvando ? 'Salvando...' : 'Salvar alterações'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cancelarEdicao}
+                        style={{ padding: '10px 18px', background: '#e2e8f0', color: '#334155', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    key={p.id}
+                    style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: '8px', background: '#fff', flexWrap: 'wrap' }}
+                  >
+                    <img src={p.imagem} alt={p.titulo} style={{ width: '56px', height: '56px', objectFit: 'cover', borderRadius: '6px' }} />
+
+                    <div style={{ flex: 1, minWidth: '160px' }}>
+                      <strong style={{ color: '#1e293b' }}>{p.titulo}</strong>
+                      <div style={{ fontSize: '12px', color: '#94a3b8' }}>{p.categoria}</div>
+                    </div>
+
+                    <span style={{ fontWeight: 'bold', color: '#16a34a' }}>R$ {Number(p.precoMinimo).toFixed(2)}</span>
+                    <span style={{ color: p.estoque > 0 ? '#475569' : '#dc2626' }}>
+                      {p.estoque > 0 ? `Estoque: ${p.estoque}` : 'Esgotado'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => iniciarEdicao(p)}
+                      style={{ padding: '10px 16px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
+                    >
+                      Editar
+                    </button>
+                  </div>
+                )
+              )}
             </div>
-
-            <div>
-              <label>Nome da sua Confecção *</label>
-              <input 
-                type="text" 
-                placeholder="Ex: Confecção Nordeste Moda" 
-                value={form.fabricante} 
-                onChange={(e) => setForm({ ...form, fabricante: e.target.value })} 
-                required 
-              />
-            </div>
-
-            <div>
-              <label>Cidade e Estado *</label>
-              <input 
-                type="text" 
-                placeholder="Ex: Caruaru - PE" 
-                value={form.local} 
-                onChange={(e) => setForm({ ...form, local: e.target.value })} 
-                required 
-              />
-            </div>
-
-            <div>
-              <label>Preço de Venda (R$) *</label>
-              <input 
-                type="number" 
-                step="0.01" 
-                placeholder="Ex: 89.90" 
-                value={form.preco} 
-                onChange={(e) => setForm({ ...form, preco: e.target.value })} 
-                required 
-              />
-            </div>
-
-            <div>
-              <label>Categoria</label>
-              <select value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })}>
-                <option value="CALÇAS">CALÇAS</option>
-                <option value="BLUSAS">BLUSAS</option>
-                <option value="VESTIDOS">VESTIDOS</option>
-                <option value="JAQUETAS">JAQUETAS</option>
-              </select>
-            </div>
-          </div>
-
-          <div style={{ marginTop: '15px' }}>
-            <label>Descrição da Peça</label>
-            <textarea 
-              rows="3" 
-              placeholder="Descreva o tecido, modelagem e especificações da peça..." 
-              value={form.descricao} 
-              onChange={(e) => setForm({ ...form, descricao: e.target.value })} 
-            />
-          </div>
-
-          <button type="submit" className={styles.btnSave}>
-            Publicar Produto no Catálogo
-          </button>
-        </form>
-      )}
-
-=======
-import React from 'react';
-import styles from './PainelFornecedor.module.css';
-
-export default function PainelFornecedor() {
-  return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1>Painel do Fabricante</h1>
-        <button className={styles.btnNew}>+ Cadastrar Novo Produto</button>
-      </header>
-
->>>>>>> 76712ebea165153f9c654aaa91688691037f9437
-      <div className={styles.gridStats}>
-        <div className={styles.statCard}>
-          <span>Vendas no Mês</span>
-          <h2>R$ 14.250,00</h2>
-        </div>
-        <div className={styles.statCard}>
-          <span>Pedidos Pendentes</span>
-          <h2>18</h2>
-        </div>
-        <div className={styles.statCard}>
-          <span>Avaliação Média</span>
-          <h2>4.9 ★</h2>
+          )}
         </div>
       </div>
     </div>

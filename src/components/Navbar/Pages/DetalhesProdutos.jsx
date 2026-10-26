@@ -1,175 +1,188 @@
 import React, { useState } from 'react';
-import styles from './DetalhesProdutos.module.css';
-<<<<<<< HEAD
 
-export default function DetalhesProdutos({ produto, setPaginaAtual, adicionarAoCarrinho }) {
-  // Inicializa o fornecedor selecionado com o primeiro da lista ou o principal
-  const listaFornecedores = produto.fornecedores && produto.fornecedores.length > 0 
-    ? produto.fornecedores 
-    : [{ id: 999, nome: produto.fabricante, cidade: produto.local, avaliacao: '4.9', prazo: '3-5 dias', preco: produto.precoMinimo, frete: 'Grátis', melhorPreco: true }];
+const brl = (v) => Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-  const [fornecedorSelecionado, setFornecedorSelecionado] = useState(listaFornecedores[0]);
-  const [tamanho, setTamanho] = useState('M');
+export default function DetalhesProdutos({ produto, adicionarAoCarrinho, voltar, usuarioLogado, irParaLogin }) {
+  // Hooks sempre ficam antes de qualquer "return" antecipado
+  const [tamanhoSelecionado, setTamanhoSelecionado] = useState('P');
+  const [ofertaEscolhidaId, setOfertaEscolhidaId] = useState(null);
+
+  if (!produto) {
+    return (
+      <div style={{ padding: '50px', textAlign: 'center', fontFamily: 'Segoe UI, sans-serif' }}>
+        <h2>Nenhum produto selecionado.</h2>
+        <button
+          type="button"
+          onClick={voltar}
+          style={{ marginTop: '20px', padding: '10px 20px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}
+        >
+          Voltar ao Catálogo
+        </button>
+      </div>
+    );
+  }
+
+  // Lojas que vendem este produto, da mais barata para a mais cara
+  const lojas = [...(produto.fornecedores || [])].sort((a, b) => a.preco - b.preco);
+  const menorPreco = lojas.find((l) => l.estoque > 0)?.preco ?? lojas[0]?.preco ?? 0;
+
+  // Oferta escolhida pelo cliente; se não escolheu (ou ela esgotou), usa a mais barata disponível
+  const escolhida =
+    lojas.find((l) => l.id === ofertaEscolhidaId && l.estoque > 0) ||
+    lojas.find((l) => l.estoque > 0) ||
+    lojas[0];
+
+  const esgotado = !escolhida || escolhida.estoque <= 0;
+
+  const handleComprar = () => {
+    if (!usuarioLogado) {
+      alert('Você precisa estar cadastrado e logado para comprar!');
+      if (irParaLogin) irParaLogin();
+      return;
+    }
+    // O App já avisa "adicionado ao carrinho"
+    if (adicionarAoCarrinho) {
+      adicionarAoCarrinho(produto, tamanhoSelecionado, escolhida);
+    }
+  };
 
   return (
-    <div className={styles.container}>
-      <button className={styles.backBtn} onClick={() => setPaginaAtual('produtos')}>
-        ← Voltar para o Catálogo
+    <div style={{ padding: '30px 40px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'Segoe UI, sans-serif' }}>
+      <button
+        type="button"
+        onClick={voltar}
+        style={{ marginBottom: '20px', padding: '8px 16px', background: '#e2e8f0', color: '#334155', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}
+      >
+        ← Voltar ao Catálogo
       </button>
 
-      <div className={styles.gridMain}>
-        {/* Imagem do Produto */}
-        <div className={styles.imageBox}>
-          <img src={produto.imagem} alt={produto.titulo} className={styles.productImg} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', background: '#fff', padding: '30px', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+        <div>
+          <img
+            src={produto.imagem || 'https://via.placeholder.com/400'}
+            alt={produto.titulo || produto.nome}
+            style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '400px' }}
+          />
         </div>
 
-        {/* Detalhes Principais */}
-        <div className={styles.infoBox}>
-          <span className={styles.categoriaTag}>{produto.categoria}</span>
-          <h2>{produto.titulo}</h2>
-          <p className={styles.descricao}>{produto.descricao}</p>
+        <div>
+          <span style={{ fontSize: '12px', background: '#eff6ff', color: '#2563eb', padding: '4px 8px', borderRadius: '4px', fontWeight: '600' }}>
+            Vendido e entregue por: {escolhida?.nome || 'Fabricante'} ({escolhida?.cidade || 'Brasil'})
+          </span>
+          <h1 style={{ fontSize: '26px', color: '#1e293b', margin: '15px 0 10px 0' }}>{produto.titulo || produto.nome}</h1>
+          <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '20px' }}>{produto.descricao || 'Peça exclusiva cadastrada pela confecção parceira.'}</p>
 
-          <div className={styles.tamanhoBox}>
-            <label>Selecione o Tamanho:</label>
-            <div className={styles.tamanhosBtns}>
+          <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#16a34a', margin: '0 0 8px 0' }}>
+            {brl(escolhida?.preco)}
+          </p>
+          <p style={{ margin: '0 0 20px 0', fontSize: '13px', fontWeight: 600, color: esgotado ? '#dc2626' : '#475569' }}>
+            {esgotado ? 'Esgotado nesta loja' : `${escolhida.estoque} em estoque nesta loja`}
+          </p>
+
+          <div style={{ marginBottom: '25px' }}>
+            <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#334155' }}>Selecione o Tamanho:</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
               {['P', 'M', 'G', 'GG'].map((t) => (
                 <button
                   key={t}
-                  className={`${styles.btnTamanho} ${tamanho === t ? styles.tamanhoAtivo : ''}`}
-                  onClick={() => setTamanho(t)}
+                  type="button"
+                  onClick={() => setTamanhoSelecionado(t)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    border: tamanhoSelecionado === t ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                    background: tamanhoSelecionado === t ? '#eff6ff' : '#fff',
+                    color: tamanhoSelecionado === t ? '#2563eb' : '#334155',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
                 >
-=======
-import baggyImg from '../../../assets/baggy.jpg'; // Importa a imagem real
-
-export default function DetalhesProdutos({ setPaginaAtual }) {
-  const [tamanho, setTamanho] = useState('M');
-
-  const prod = {
-    titulo: 'Calça Baggy Wide Leg com Corrente',
-    categoria: 'CALÇAS',
-    avaliacao: '4.8',
-    avaliacoesQtd: 128,
-    precoOriginal: '159,90',
-    precoMinimo: '129,90',
-    imagem: baggyImg // Usa a imagem local do assets
-  };
-
-  const fornecedores = [
-    { id: 1, nome: 'Confecção do Sul', melhorPreco: true, cidade: 'Porto Alegre, RS', avaliacao: '4.9', prazo: '3-5 dias', preco: '129,90', frete: 'Grátis' },
-    { id: 2, nome: 'Têxtil SP', melhorPreco: false, cidade: 'São Paulo, SP', avaliacao: '4.7', prazo: '2-4 dias', preco: '144,90', frete: 'R$ 12,00' },
-    { id: 3, nome: 'Têxtil Norte', melhorPreco: false, cidade: 'Fortaleza, CE', avaliacao: '4.8', prazo: '5-7 dias', preco: '155,00', frete: 'R$ 15,00' }
-  ];
-
-  return (
-    <div className={styles.container}>
-      <button className={styles.backBtn} onClick={() => setPaginaAtual('produtos')}>
-        ← Voltar para Produtos
-      </button>
-
-      <div className={styles.mainGrid}>
-        <div className={styles.imageSection}>
-          <img src={prod.imagem} alt={prod.titulo} className={styles.mainImage} />
-        </div>
-
-        <div className={styles.infoSection}>
-          <span className={styles.category}>{prod.categoria} — STREETWEAR</span>
-          <h1>{prod.titulo}</h1>
-          <div className={styles.rating}>★ {prod.avaliacao} ({prod.avaliacoesQtd} avaliações)</div>
-
-          <div className={styles.priceContainer}>
-            <h2>R$ {prod.precoMinimo}</h2>
-            <span className={styles.oldPrice}>R$ {prod.precoOriginal}</span>
-            <p className={styles.sellerCount}>Vendido por <strong>Confecção do Sul</strong> e outros 2 fornecedores</p>
-          </div>
-
-          <p className={styles.description}>
-            Modelagem oversized com tecido resistente de alta qualidade. Costuras reforçadas e acabamento premium.
-          </p>
-
-          <div className={styles.sizeSelector}>
-            <label>Tamanho: <strong>{tamanho}</strong></label>
-            <div className={styles.sizes}>
-              {['P', 'M', 'G', 'GG'].map((t) => (
-                <button key={t} className={tamanho === t ? styles.selectedSize : ''} onClick={() => setTamanho(t)}>
->>>>>>> 76712ebea165153f9c654aaa91688691037f9437
                   {t}
                 </button>
               ))}
             </div>
           </div>
 
-<<<<<<< HEAD
-          <div className={styles.precoDestaque}>
-            <span>Preço Selecionado:</span>
-            <h3>R$ {fornecedorSelecionado.preco.toFixed(2).replace('.', ',')}</h3>
-            <p className={styles.freteInfo}>Frete: {fornecedorSelecionado.frete} ({fornecedorSelecionado.cidade})</p>
-          </div>
-
-          <button 
-            className={styles.btnAdicionar}
-            onClick={() => adicionarAoCarrinho(produto, tamanho, fornecedorSelecionado)}
+          <button
+            type="button"
+            onClick={handleComprar}
+            disabled={esgotado}
+            style={{ width: '100%', padding: '14px', background: esgotado ? '#cbd5e1' : '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: esgotado ? 'not-allowed' : 'pointer' }}
           >
-            🛒 Adicionar ao Carrinho ({fornecedorSelecionado.nome})
+            {esgotado ? 'Produto esgotado' : 'Adicionar ao Carrinho'}
           </button>
         </div>
       </div>
 
-      {/* Lista de Confecções / Fornecedores Disponíveis */}
-      <div className={styles.secaoFornecedores}>
-        <h3>Comparar Ofertas de Confecções Parceiras</h3>
-        <p>Escolha a melhor opção de preço, localização ou prazo de entrega para o seu pedido:</p>
+      {/* Comparação de preços entre lojas */}
+      <div style={{ marginTop: '30px', background: '#fff', padding: '25px 30px', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+        <h2 style={{ fontSize: '18px', color: '#1e293b', margin: '0 0 4px 0' }}>
+          Compare preços entre lojas
+        </h2>
+        <p style={{ margin: '0 0 18px 0', fontSize: '13px', color: '#64748b' }}>
+          {lojas.length > 1
+            ? `${lojas.length} lojas vendem este produto. Escolha a que preferir.`
+            : 'No momento só uma loja vende este produto.'}
+        </p>
 
-        <div className={styles.listaFornecedores}>
-          {listaFornecedores.map((f) => (
-            <div 
-              key={f.id} 
-              className={`${styles.cardFornecedor} ${fornecedorSelecionado.id === f.id ? styles.fornecedorSelecionado : ''}`}
-              onClick={() => setFornecedorSelecionado(f)}
-            >
-              <div className={styles.fornecedorHeader}>
-                <strong>{f.nome}</strong>
-                {f.melhorPreco && <span className={styles.badgePreco}>Melhor Preço</span>}
-              </div>
-              <p>📍 {f.cidade} • ⭐ {f.avaliacao}</p>
-              <p>🚚 Entrega: {f.prazo} ({f.frete})</p>
-              <div className={styles.fornecedorPreco}>
-                <span>R$ {f.preco.toFixed(2).replace('.', ',')}</span>
-                <button className={styles.btnEscolher}>
-                  {fornecedorSelecionado.id === f.id ? '✓ Selecionado' : 'Selecionar'}
-                </button>
-=======
-          <div className={styles.actions}>
-            <button className={styles.buyNowBtn}>🛒 Comprar Agora</button>
-            <button className={styles.addCartBtn}>Adicionar ao Carrinho</button>
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {lojas.map((loja) => {
+            const semEstoque = loja.estoque <= 0;
+            const selecionada = escolhida && loja.id === escolhida.id;
+            const diferenca = loja.preco - menorPreco;
+
+            return (
+              <button
+                key={loja.id}
+                type="button"
+                disabled={semEstoque}
+                onClick={() => setOfertaEscolhidaId(loja.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '12px',
+                  flexWrap: 'wrap',
+                  textAlign: 'left',
+                  padding: '14px 18px',
+                  borderRadius: '10px',
+                  border: selecionada ? '2px solid #2563eb' : '1px solid #e2e8f0',
+                  background: selecionada ? '#eff6ff' : '#fff',
+                  opacity: semEstoque ? 0.55 : 1,
+                  cursor: semEstoque ? 'not-allowed' : 'pointer',
+                  font: 'inherit'
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <strong style={{ color: '#1e293b', fontSize: '15px' }}>{loja.nome}</strong>
+                    {loja.melhorPreco && (
+                      <span style={{ background: '#dcfce7', color: '#15803d', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px' }}>
+                        Melhor preço
+                      </span>
+                    )}
+                    {selecionada && (
+                      <span style={{ background: '#2563eb', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px' }}>
+                        Selecionada
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#64748b', marginTop: '3px' }}>
+                    📍 {loja.cidade} · {semEstoque ? 'Esgotado' : `${loja.estoque} em estoque`}
+                  </div>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#16a34a' }}>{brl(loja.preco)}</div>
+                  {!semEstoque && diferenca > 0.004 && (
+                    <div style={{ fontSize: '12px', color: '#b45309' }}>+ {brl(diferenca)} que o melhor preço</div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
-
-      <section className={styles.suppliersSection}>
-        <h3>COMPARAÇÃO DE PREÇOS</h3>
-        <h2>{fornecedores.length} fornecedores disponíveis para este produto</h2>
-
-        <div className={styles.suppliersList}>
-          {fornecedores.map((f) => (
-            <div key={f.id} className={styles.supplierCard}>
-              <div>
-                <strong>{f.nome}</strong> {f.melhorPreco && <span className={styles.bestPriceTag}>MELHOR PREÇO</span>}
-                <p>📍 {f.cidade} • ★ {f.avaliacao} • 🚚 {f.prazo}</p>
-              </div>
-              <div className={styles.supplierPrice}>
-                <span className={styles.price}>R$ {f.preco}</span>
-                <p>Frete: {f.frete}</p>
-                <button className={styles.selectSupplierBtn}>{f.melhorPreco ? 'Selecionado' : 'Selecionar'}</button>
->>>>>>> 76712ebea165153f9c654aaa91688691037f9437
-              </div>
-            </div>
-          ))}
-        </div>
-<<<<<<< HEAD
-      </div>
-=======
-      </section>
->>>>>>> 76712ebea165153f9c654aaa91688691037f9437
     </div>
   );
 }

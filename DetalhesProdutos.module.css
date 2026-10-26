@@ -14,7 +14,7 @@
   margin-bottom: 20px;
 }
 
-.mainGrid {
+.gridMain {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
@@ -24,58 +24,60 @@
   border: 1px solid #e2e8f0;
 }
 
-.mainImage {
+.imageBox {
+  width: 100%;
+}
+
+.productImg {
   width: 100%;
   border-radius: 12px;
   max-height: 450px;
   object-fit: cover;
 }
 
-.category {
+.infoBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.categoriaTag {
   font-size: 0.75rem;
   color: #64748b;
   font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 8px;
 }
 
-.priceContainer {
-  margin: 20px 0;
-  padding: 15px;
-  background: #f8fafc;
-  border-radius: 8px;
+.infoBox h2 {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+  color: #0f172a;
 }
 
-.priceContainer h2 {
-  font-size: 2rem;
-  margin: 0;
-}
-
-.oldPrice {
-  text-decoration: line-through;
-  color: #94a3b8;
-}
-
-.sellerCount {
-  font-size: 0.85rem;
-  color: #2563eb;
-  margin-top: 5px;
-}
-
-.description {
+.descricao {
   color: #475569;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
 }
 
-.sizeSelector {
-  margin: 20px 0;
+.tamanhoBox {
+  margin: 15px 0;
 }
 
-.sizes {
+.tamanhoBox label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #334155;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.tamanhosBtns {
   display: flex;
   gap: 10px;
-  margin-top: 8px;
 }
 
-.sizes button {
+.btnTamanho {
   width: 40px;
   height: 40px;
   border: 1px solid #cbd5e1;
@@ -83,41 +85,62 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
+  color: #1e293b;
 }
 
-.selectedSize {
+.btnTamanho:hover {
+  border-color: #94a3b8;
+}
+
+.tamanhoAtivo {
   border-color: #2563eb !important;
   background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+.precoDestaque {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.precoDestaque span {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.precoDestaque h3 {
+  font-size: 1.8rem;
   color: #2563eb;
+  margin: 4px 0;
 }
 
-.actions {
-  display: flex;
-  gap: 12px;
+.freteInfo {
+  font-size: 0.85rem;
+  color: #475569;
+  margin: 0;
 }
 
-.buyNowBtn {
-  flex: 1;
+.btnAdicionar {
   background: #2563eb;
   color: white;
   border: none;
-  padding: 12px;
+  padding: 14px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+  width: 100%;
+  font-size: 1rem;
+  transition: background 0.2s;
 }
 
-.addCartBtn {
-  flex: 1;
-  background: white;
-  border: 1px solid #cbd5e1;
-  padding: 12px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
+.btnAdicionar:hover {
+  background: #1d4ed8;
 }
 
-.suppliersSection {
+.secaoFornecedores {
   margin-top: 40px;
   background: white;
   padding: 30px;
@@ -125,45 +148,90 @@
   border: 1px solid #e2e8f0;
 }
 
-.suppliersList {
+.secaoFornecedores h3 {
+  font-size: 1.4rem;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.secaoFornecedores p {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+.listaFornecedores {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 20px;
 }
 
-.supplierCard {
+.cardFornecedor {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
   padding: 16px;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fafafa;
 }
 
-.bestPriceTag {
+.cardFornecedor:hover {
+  border-color: #cbd5e1;
+}
+
+.fornecedorSelecionado {
+  border-color: #2563eb !important;
+  background: #eff6ff !important;
+}
+
+.fornecedorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badgePreco {
   background: #10b981;
   color: white;
   font-size: 0.65rem;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: 4px;
+  font-weight: 700;
 }
 
-.supplierPrice {
-  text-align: right;
+.cardFornecedor p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #475569;
 }
 
-.price {
-  font-size: 1.2rem;
-  font-weight: 800;
-  display: block;
+.fornecedorPreco {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
 }
 
-.selectSupplierBtn {
+.fornecedorPreco span {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.btnEscolher {
   background: #0f172a;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
+}
+
+.btnEscolher:hover {
+  background: #1e293b;
 }

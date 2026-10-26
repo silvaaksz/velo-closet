@@ -1,90 +1,103 @@
 import React, { useState } from 'react';
-import styles from './DetalhesProdutos.module.css';
-import baggyImg from '../../../assets/baggy.jpg'; // Importa a imagem real
 
-export default function DetalhesProdutos({ setPaginaAtual }) {
-  const [tamanho, setTamanho] = useState('M');
+export default function DetalhesProdutos({ produto, adicionarAoCarrinho, voltar, usuarioLogado, irParaLogin }) {
+  if (!produto) {
+    return (
+      <div style={{ padding: '50px', textAlign: 'center', fontFamily: 'Segoe UI, sans-serif' }}>
+        <h2>Nenhum produto selecionado.</h2>
+        <button 
+          type="button"
+          onClick={voltar}
+          style={{ marginTop: '20px', padding: '10px 20px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}
+        >
+          Voltar ao Catálogo
+        </button>
+      </div>
+    );
+  }
 
-  const prod = {
-    titulo: 'Calça Baggy Wide Leg com Corrente',
-    categoria: 'CALÇAS',
-    avaliacao: '4.8',
-    avaliacoesQtd: 128,
-    precoOriginal: '159,90',
-    precoMinimo: '129,90',
-    imagem: baggyImg // Usa a imagem local do assets
+  const [tamanhoSelecionado, setTamanhoSelecionado] = useState('P');
+
+  const handleComprar = () => {
+    if (!usuarioLogado) {
+      alert('Você precisa estar cadastrado e logado para comprar!');
+      if (irParaLogin) irParaLogin();
+      return;
+    }
+
+    const itemParaCarrinho = {
+      ...produto,
+      tamanhoSelecionado: tamanhoSelecionado
+    };
+    if (adicionarAoCarrinho) {
+      adicionarAoCarrinho(itemParaCarrinho, tamanhoSelecionado);
+    }
+    alert('Produto adicionado ao carrinho com sucesso!');
   };
 
-  const fornecedores = [
-    { id: 1, nome: 'Confecção do Sul', melhorPreco: true, cidade: 'Porto Alegre, RS', avaliacao: '4.9', prazo: '3-5 dias', preco: '129,90', frete: 'Grátis' },
-    { id: 2, nome: 'Têxtil SP', melhorPreco: false, cidade: 'São Paulo, SP', avaliacao: '4.7', prazo: '2-4 dias', preco: '144,90', frete: 'R$ 12,00' },
-    { id: 3, nome: 'Têxtil Norte', melhorPreco: false, cidade: 'Fortaleza, CE', avaliacao: '4.8', prazo: '5-7 dias', preco: '155,00', frete: 'R$ 15,00' }
-  ];
-
   return (
-    <div className={styles.container}>
-      <button className={styles.backBtn} onClick={() => setPaginaAtual('produtos')}>
-        ← Voltar para Produtos
+    <div style={{ padding: '30px 40px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'Segoe UI, sans-serif' }}>
+      <button 
+        type="button"
+        onClick={voltar}
+        style={{ marginBottom: '20px', padding: '8px 16px', background: '#e2e8f0', color: '#334155', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}
+      >
+        ← Voltar ao Catálogo
       </button>
 
-      <div className={styles.mainGrid}>
-        <div className={styles.imageSection}>
-          <img src={prod.imagem} alt={prod.titulo} className={styles.mainImage} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', background: '#fff', padding: '30px', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+        <div>
+          <img 
+            src={produto.imagem || 'https://via.placeholder.com/400'} 
+            alt={produto.titulo || produto.nome} 
+            style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '400px' }} 
+          />
         </div>
 
-        <div className={styles.infoSection}>
-          <span className={styles.category}>{prod.categoria} — STREETWEAR</span>
-          <h1>{prod.titulo}</h1>
-          <div className={styles.rating}>★ {prod.avaliacao} ({prod.avaliacoesQtd} avaliações)</div>
+        <div>
+          <span style={{ fontSize: '12px', background: '#eff6ff', color: '#2563eb', padding: '4px 8px', borderRadius: '4px', fontWeight: '600' }}>
+            Vendido e entregue por: {produto.fabricante || 'Fabricante'} ({produto.local || 'Brasil'})
+          </span>
+          <h1 style={{ fontSize: '26px', color: '#1e293b', margin: '15px 0 10px 0' }}>{produto.titulo || produto.nome}</h1>
+          <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '20px' }}>{produto.descricao || 'Peça exclusiva cadastrada pela confecção parceira.'}</p>
 
-          <div className={styles.priceContainer}>
-            <h2>R$ {prod.precoMinimo}</h2>
-            <span className={styles.oldPrice}>R$ {prod.precoOriginal}</span>
-            <p className={styles.sellerCount}>Vendido por <strong>Confecção do Sul</strong> e outros 2 fornecedores</p>
-          </div>
-
-          <p className={styles.description}>
-            Modelagem oversized com tecido resistente de alta qualidade. Costuras reforçadas e acabamento premium.
+          <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#16a34a', margin: '0 0 20px 0' }}>
+            R$ {Number(produto.precoMinimo || produto.preco || 0).toFixed(2)}
           </p>
 
-          <div className={styles.sizeSelector}>
-            <label>Tamanho: <strong>{tamanho}</strong></label>
-            <div className={styles.sizes}>
+          <div style={{ marginBottom: '25px' }}>
+            <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#334155' }}>Selecione o Tamanho:</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
               {['P', 'M', 'G', 'GG'].map((t) => (
-                <button key={t} className={tamanho === t ? styles.selectedSize : ''} onClick={() => setTamanho(t)}>
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTamanhoSelecionado(t)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    border: tamanhoSelecionado === t ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                    background: tamanhoSelecionado === t ? '#eff6ff' : '#fff',
+                    color: tamanhoSelecionado === t ? '#2563eb' : '#334155',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                >
                   {t}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className={styles.actions}>
-            <button className={styles.buyNowBtn}>🛒 Comprar Agora</button>
-            <button className={styles.addCartBtn}>Adicionar ao Carrinho</button>
-          </div>
+          <button
+            type="button"
+            onClick={handleComprar}
+            style={{ width: '100%', padding: '14px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer' }}
+          >
+            Adicionar ao Carrinho
+          </button>
         </div>
       </div>
-
-      <section className={styles.suppliersSection}>
-        <h3>COMPARAÇÃO DE PREÇOS</h3>
-        <h2>{fornecedores.length} fornecedores disponíveis para este produto</h2>
-
-        <div className={styles.suppliersList}>
-          {fornecedores.map((f) => (
-            <div key={f.id} className={styles.supplierCard}>
-              <div>
-                <strong>{f.nome}</strong> {f.melhorPreco && <span className={styles.bestPriceTag}>MELHOR PREÇO</span>}
-                <p>📍 {f.cidade} • ★ {f.avaliacao} • 🚚 {f.prazo}</p>
-              </div>
-              <div className={styles.supplierPrice}>
-                <span className={styles.price}>R$ {f.preco}</span>
-                <p>Frete: {f.frete}</p>
-                <button className={styles.selectSupplierBtn}>{f.melhorPreco ? 'Selecionado' : 'Selecionar'}</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }

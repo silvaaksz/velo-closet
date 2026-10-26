@@ -1,247 +1,328 @@
 .container {
+  padding: 30px 40px;
   max-width: 1100px;
-  margin: 40px auto;
-  padding: 0 20px;
-<<<<<<< HEAD
-  color: #0f172a;
-}
-
-.bannerHeader {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.bannerHeader h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-
-.bannerHeader p {
-  color: #64748b;
-  font-size: 1.05rem;
-}
-
-.secaoTitulo {
-  text-align: center;
-  font-size: 1.4rem;
-  margin-bottom: 24px;
-}
-
-.gridPlanos {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  margin-bottom: 40px;
-}
-
-.cardPlano {
-  background: white;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 30px;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s;
-}
-
-.cardPlano:hover {
-  border-color: #2563eb;
-}
-
-.planoAtivo {
-  border-color: #2563eb !important;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-}
-
-.cardPro {
-  background: #f8fafc;
-}
-
-.badgePopular {
-  position: absolute;
-  top: -12px;
-  right: 20px;
-  background: #2563eb;
-  color: white;
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 4px 12px;
-  border-radius: 12px;
-}
-
-.precoPlano {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: #2563eb;
-  margin: 15px 0;
-}
-
-.precoPlano span {
-  font-size: 1rem;
-  color: #64748b;
-  font-weight: 400;
-}
-
-.cardPlano ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.cardPlano li {
-  font-size: 0.9rem;
-  color: #475569;
-  margin-bottom: 10px;
-}
-
-.loginBox {
-  max-width: 500px;
   margin: 0 auto;
-  background: white;
-  border: 1px solid #cbd5e1;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.loginBox h3 {
-  margin-bottom: 6px;
-}
-
-.loginBox p {
-  color: #64748b;
-  font-size: 0.9rem;
-  margin-bottom: 20px;
-}
-
-.formLogin {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.fieldGroup label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #475569;
-  margin-bottom: 5px;
-}
-
-.fieldGroup input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  outline: none;
-}
-
-.btnEntrar {
-  background: #10b981;
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.btnEntrar:hover {
-  background: #059669;
-}
-
-/* Painel Autenticado */
-=======
-}
-
->>>>>>> 76712ebea165153f9c654aaa91688691037f9437
 .header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.header h1 {
+  font-size: 28px;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: #64748b;
+  font-size: 16px;
+}
+
+.banner {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #fff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
 }
 
-.btnNew {
-  background: #10b981;
-  color: white;
+.banner h1 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+}
+
+.banner p {
+  margin: 0;
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+.btnLogout {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: #fff;
   border: none;
-  padding: 10px 18px;
   border-radius: 8px;
-  font-weight: 600;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.tab, .tabActive {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
   cursor: pointer;
 }
 
-<<<<<<< HEAD
-.formCard {
-  background: white;
-  border: 1px solid #cbd5e1;
-  padding: 24px;
+.tab {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.tabActive {
+  background: #2563eb;
+  color: #fff;
+}
+
+.sectionCard, .formCard, .authCard {
+  background: #fff;
+  padding: 30px;
   border-radius: 12px;
-  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-.formCard h3 {
+.sectionCard h2, .formCard h2 {
+  font-size: 18px;
+  color: #1e293b;
   margin-bottom: 20px;
-  color: #0f172a;
 }
 
-.formGrid {
+.emptyText {
+  color: #64748b;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.productCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 15px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.productImg {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.productCard strong {
+  display: block;
+  color: #1e293b;
+  font-size: 15px;
+}
+
+.productCard span {
+  color: #16a34a;
+  font-weight: bold;
+  display: block;
+  margin-top: 5px;
+}
+
+.btnEdit {
+  margin-top: 12px;
+  padding: 8px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field label {
+  font-weight: 600;
+  color: #334155;
+  font-size: 14px;
+}
+
+.field input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+}
+
+.row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
 }
 
-.formCard label {
-  display: block;
-  font-size: 0.85rem;
+.cepRow {
+  display: flex;
+  gap: 10px;
+}
+
+.btnCep {
+  padding: 10px 16px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.addressBox {
+  background: #f8fafc;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.btnSubmit {
+  padding: 12px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btnGreen {
+  padding: 12px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+.planBox {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.planBoxActive {
+  border: 2px solid #2563eb;
+}
+
+.planBox h3 {
+  font-size: 20px;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.planPrice {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2563eb;
+  margin: 0 0 10px 0;
+}
+
+.planLimit {
   font-weight: 600;
   color: #475569;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 
-.formCard input, .formCard select, .formCard textarea {
+.planList {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.btnPlan, .btnPlanActive {
   width: 100%;
   padding: 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  outline: none;
-}
-
-.btnSave {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
   margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-=======
->>>>>>> 76712ebea165153f9c654aaa91688691037f9437
-.gridStats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+.btnPlan {
+  background: #f1f5f9;
+  color: #334155;
 }
 
-.statCard {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
+.btnPlanActive {
+  background: #2563eb;
+  color: #fff;
 }
 
-.statCard span {
-  font-size: 0.85rem;
-  color: #64748b;
+.authCard {
+  max-width: 650px;
+  margin: 0 auto;
 }
 
-.statCard h2 {
-  margin: 10px 0 0 0;
-  color: #0f172a;
+.authTabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 15px;
+}
+
+.authTab, .authTabActive {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.authTab {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.authTabActive {
+  background: #2563eb;
+  color: #fff;
 }
